@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useMess } from '@/context/MessContext';
 import { Modal } from '@/components/ui/Modal';
-import { Check, User, DollarSign, Wallet, CreditCard, AlertCircle } from 'lucide-react';
+import { Check, Wallet, AlertCircle } from 'lucide-react';
 import { formatTaka } from '@/lib/utils';
 
 interface RecordPaymentModalProps {
@@ -265,4 +265,3 @@ export function RecordPaymentModal({
     </Modal>
   );
 }
-

@@ -6,7 +6,7 @@ import { Student } from '@/types';
 import { Modal } from '@/components/ui/Modal';
 import { formatTaka } from '@/lib/utils';
 import { RecordPaymentModal } from './RecordPaymentModal';
-import { User, Phone, GraduationCap, Building, CreditCard, Calendar, CheckCircle2 } from 'lucide-react';
+import { Phone, CheckCircle2 } from 'lucide-react';
 
 interface StudentProfileDrawerProps {
   student: Student | null;
@@ -23,17 +23,12 @@ export function StudentProfileDrawer({ student, isOpen, onClose }: StudentProfil
   const studentBookings = bookings.filter(
     (b) => b.studentId === student.id && b.periodId === activePeriodId
   );
-  const studentAttendance = attendance.filter(
-    (a) => a.studentId === student.id && a.periodId === activePeriodId
-  );
   const studentTxns = transactions.filter(
     (t) => t.studentId === student.id && t.periodId === activePeriodId
   );
   const studentReceivables = receivables.filter(
     (r) => r.studentId === student.id && r.periodId === activePeriodId && r.status === 'pending'
   );
-
-  const mealsTakenCount = studentAttendance.filter((a) => a.isTaken).length;
 
   return (
     <>
@@ -223,4 +218,3 @@ export function StudentProfileDrawer({ student, isOpen, onClose }: StudentProfil
     </>
   );
 }
-

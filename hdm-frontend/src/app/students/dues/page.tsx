@@ -277,7 +277,6 @@ export default function DuesAndReceivablesPage() {
           isOpen={true}
           onClose={() => setSettleModalData(null)}
           title="Settle Payable / Refund"
-          subtitle={`Disburse payable refund of ${formatTaka(settleModalData.amount)} to ${settleModalData.studentName}`}
           maxWidth="md"
         >
           <form onSubmit={handleSettleSubmit} className="space-y-4 text-sm">
