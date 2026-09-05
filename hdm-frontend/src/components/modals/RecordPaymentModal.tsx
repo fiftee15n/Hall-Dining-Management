@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useMess } from '@/context/MessContext';
 import { Modal } from '@/components/ui/Modal';
 import { Check } from 'lucide-react';
+import { formatTaka } from '@/lib/utils';
 
 interface RecordPaymentModalProps {
   isOpen: boolean;
@@ -98,11 +99,19 @@ export function RecordPaymentModal({
                 </p>
                 <p className="text-[10px] text-slate-500">{selectedStudent.department}</p>
               </div>
-              <div className="text-right">
-                <span className="text-[10px] text-slate-500 block">Due:</span>
-                <span className={`font-bold ${selectedStudent.balanceDue > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
-                  ৳{selectedStudent.balanceDue}
-                </span>
+              <div className="flex gap-3 text-right">
+                <div>
+                  <span className="text-[10px] text-slate-500 block">Due:</span>
+                  <span className={`font-bold ${selectedStudent.balanceDue > 0 ? 'text-rose-600' : 'text-slate-400'}`}>
+                    ৳{selectedStudent.balanceDue}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-500 block">Payable:</span>
+                  <span className={`font-bold ${selectedStudent.balanceReceivable > 0 ? 'text-teal-700' : 'text-slate-400'}`}>
+                    ৳{selectedStudent.balanceReceivable}
+                  </span>
+                </div>
               </div>
             </div>
           )}
@@ -121,6 +130,12 @@ export function RecordPaymentModal({
               className="w-full px-3 py-2 rounded-lg border border-slate-300 font-bold"
             />
           </div>
+
+          {selectedStudent && Number(amount) > selectedStudent.balanceDue && (
+            <div className="p-2.5 bg-teal-50 border border-teal-200 rounded-lg text-teal-800 text-[11px] font-medium">
+              💡 Overpayment Alert: ৳{selectedStudent.balanceDue} will clear the student&apos;s current due, and the remaining <strong>{formatTaka(Number(amount) - selectedStudent.balanceDue)}</strong> will automatically be recorded as <strong>Payable to Student</strong> (Change Refund).
+            </div>
+          )}
 
           <div>
             <label className="block font-medium text-slate-700 mb-1">Payment Method</label>

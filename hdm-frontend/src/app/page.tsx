@@ -138,7 +138,7 @@ export default function DashboardPage() {
           href="/students/dues"
           className="p-3 bg-white rounded-xl border border-slate-200 hover:border-amber-400 transition shadow-2xs block"
         >
-          <span className="text-[11px] font-medium text-slate-500">Student Due</span>
+          <span className="text-[11px] font-medium text-slate-500">Student Dues (Owed to Mess)</span>
           <div className="text-base font-bold text-amber-900 mt-0.5">{formatTaka(stats.totalDue)}</div>
         </Link>
 
@@ -146,7 +146,7 @@ export default function DashboardPage() {
           href="/students/dues"
           className="p-3 bg-white rounded-xl border border-slate-200 hover:border-teal-400 transition shadow-2xs block"
         >
-          <span className="text-[11px] font-medium text-slate-500">Change Refund Owed</span>
+          <span className="text-[11px] font-medium text-slate-500">Mess Payable (Owed to Students)</span>
           <div className="text-base font-bold text-teal-800 mt-0.5">{formatTaka(stats.studentReceivablesTotal)}</div>
         </Link>
 

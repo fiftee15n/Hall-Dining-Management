@@ -19,6 +19,7 @@ export default function StudentsDirectoryPage() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBlock, setSelectedBlock] = useState<string>('ALL');
+  const [balanceFilter, setBalanceFilter] = useState<'ALL' | 'DUE' | 'PAYABLE'>('ALL');
   const [selectedStudentForDrawer, setSelectedStudentForDrawer] = useState<Student | null>(null);
   const [showAddStudentModal, setShowAddStudentModal] = useState(false);
   const [showImportCsvModal, setShowImportCsvModal] = useState(false);
@@ -35,6 +36,10 @@ export default function StudentsDirectoryPage() {
   const filteredStudents = useMemo(() => {
     return students.filter((s) => {
       const matchBlock = selectedBlock === 'ALL' || s.block === selectedBlock;
+      const matchBalance =
+        balanceFilter === 'ALL' ||
+        (balanceFilter === 'DUE' && s.balanceDue > 0) ||
+        (balanceFilter === 'PAYABLE' && s.balanceReceivable > 0);
       const q = searchQuery.toLowerCase().trim();
       const matchQuery =
         !q ||
@@ -43,9 +48,12 @@ export default function StudentsDirectoryPage() {
         `${s.block}-${s.room}`.toLowerCase().includes(q) ||
         s.studentId.toLowerCase().includes(q) ||
         s.department.toLowerCase().includes(q);
-      return matchBlock && matchQuery;
+      return matchBlock && matchBalance && matchQuery;
     });
-  }, [students, selectedBlock, searchQuery]);
+  }, [students, selectedBlock, balanceFilter, searchQuery]);
+
+  const dueStudentsCount = useMemo(() => students.filter((s) => s.balanceDue > 0).length, [students]);
+  const payableStudentsCount = useMemo(() => students.filter((s) => s.balanceReceivable > 0).length, [students]);
 
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,20 +111,55 @@ export default function StudentsDirectoryPage() {
       {/* Filter and Table Card */}
       <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-1">
-            {(['ALL', 'A', 'B', 'C', 'D'] as const).map((b) => (
+          <div className="flex flex-wrap items-center gap-1.5">
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+              {(['ALL', 'A', 'B', 'C', 'D'] as const).map((b) => (
+                <button
+                  key={b}
+                  onClick={() => setSelectedBlock(b)}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                    selectedBlock === b
+                      ? 'bg-white text-slate-900 shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  {b === 'ALL' ? 'All Blocks' : `Block ${b}`}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
               <button
-                key={b}
-                onClick={() => setSelectedBlock(b)}
-                className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
-                  selectedBlock === b
-                    ? 'bg-slate-900 text-white'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                onClick={() => setBalanceFilter('ALL')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                  balanceFilter === 'ALL'
+                    ? 'bg-white text-slate-900 shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                {b === 'ALL' ? 'All' : `Block ${b}`}
+                All Status
               </button>
-            ))}
+              <button
+                onClick={() => setBalanceFilter('DUE')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                  balanceFilter === 'DUE'
+                    ? 'bg-white text-rose-700 shadow-2xs'
+                    : 'text-slate-600 hover:text-rose-600'
+                }`}
+              >
+                With Dues ({dueStudentsCount})
+              </button>
+              <button
+                onClick={() => setBalanceFilter('PAYABLE')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                  balanceFilter === 'PAYABLE'
+                    ? 'bg-white text-teal-800 shadow-2xs'
+                    : 'text-slate-600 hover:text-teal-700'
+                }`}
+              >
+                With Payable ({payableStudentsCount})
+              </button>
+            </div>
           </div>
 
           <div className="relative w-full sm:w-64">
@@ -140,7 +183,7 @@ export default function StudentsDirectoryPage() {
                 <th className="p-3">Student ID</th>
                 <th className="p-3">Department & Batch</th>
                 <th className="p-3">Phone</th>
-                <th className="p-3">Due Balance</th>
+                <th className="p-3">Dues & Payable</th>
                 <th className="p-3 text-right">Profile</th>
               </tr>
             </thead>
@@ -191,9 +234,15 @@ export default function StudentsDirectoryPage() {
                     <td className="p-3 text-slate-600">{std.phone}</td>
                     <td className="p-3">
                       {std.balanceDue > 0 ? (
-                        <span className="font-bold text-rose-600">{formatTaka(std.balanceDue)}</span>
+                        <span className="inline-flex items-center gap-1 font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-100">
+                          Due {formatTaka(std.balanceDue)}
+                        </span>
+                      ) : std.balanceReceivable > 0 ? (
+                        <span className="inline-flex items-center gap-1 font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-100">
+                          Payable {formatTaka(std.balanceReceivable)}
+                        </span>
                       ) : (
-                        <span className="text-emerald-700 font-semibold">৳0</span>
+                        <span className="text-slate-400 font-medium">Cleared (৳0)</span>
                       )}
                     </td>
                     <td className="p-3 text-right">

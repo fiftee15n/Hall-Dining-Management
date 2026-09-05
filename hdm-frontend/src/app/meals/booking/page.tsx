@@ -104,6 +104,7 @@ export default function MealBookingPage() {
       : Number(customPaidAmount) || 0;
 
   const actualDueAmount = Math.max(0, totalAmount - actualPaidAmount);
+  const actualPayableAmount = Math.max(0, actualPaidAmount - totalAmount);
 
   const toggleMeal = (index: number, mealType: 'lunch' | 'dinner') => {
     setMealDays((prev) =>
@@ -214,6 +215,12 @@ export default function MealBookingPage() {
                 <span>{formatTaka(confirmedBooking.dueAmount)}</span>
               </div>
             )}
+            {(confirmedBooking.payableAmount || 0) > 0 && (
+              <div className="flex justify-between text-teal-700 font-bold">
+                <span>Payable to Student (Change Refund):</span>
+                <span>{formatTaka(confirmedBooking.payableAmount)}</span>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-center gap-2 pt-1">
@@ -306,8 +313,13 @@ export default function MealBookingPage() {
                         </div>
                       </div>
                       {std.balanceDue > 0 && !isSelected && (
-                        <span className="text-[10px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">
+                        <span className="text-[10px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-100">
                           Due ৳{std.balanceDue}
+                        </span>
+                      )}
+                      {std.balanceReceivable > 0 && !isSelected && (
+                        <span className="text-[10px] font-bold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded border border-teal-100">
+                          Payable ৳{std.balanceReceivable}
                         </span>
                       )}
                     </button>
@@ -319,9 +331,20 @@ export default function MealBookingPage() {
             {selectedStudent && (
               <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs">
                 <div>
-                  <span className="text-[10px] text-slate-400 block">Selected:</span>
+                  <span className="text-[10px] text-slate-400 block">Selected Resident:</span>
                   <strong className="text-slate-900">{selectedStudent.name}</strong>
                   <span className="text-slate-500 text-[11px] ml-1">({selectedStudent.block}-{selectedStudent.room})</span>
+                  <div className="flex gap-2 text-[10px] mt-0.5">
+                    {selectedStudent.balanceDue > 0 && (
+                      <span className="text-rose-600 font-bold">Due: ৳{selectedStudent.balanceDue}</span>
+                    )}
+                    {selectedStudent.balanceReceivable > 0 && (
+                      <span className="text-teal-700 font-bold">Payable: ৳{selectedStudent.balanceReceivable}</span>
+                    )}
+                    {selectedStudent.balanceDue === 0 && selectedStudent.balanceReceivable === 0 && (
+                      <span className="text-emerald-700 font-semibold">Balance: Cleared (৳0)</span>
+                    )}
+                  </div>
                 </div>
                 <span className="text-xs text-emerald-600 font-bold">✓ Ready</span>
               </div>
@@ -472,17 +495,34 @@ export default function MealBookingPage() {
                 </div>
 
                 {paymentOption === 'partial' && (
-                  <div className="flex gap-2 pt-1">
-                    <input
-                      type="number"
-                      placeholder="Paid Amount"
-                      value={customPaidAmount}
-                      onChange={(e) => setCustomPaidAmount(e.target.value)}
-                      className="w-full px-2 py-1 border rounded bg-white font-bold"
-                    />
-                    <div className="text-xs text-rose-600 font-bold flex items-center whitespace-nowrap">
-                      Due: {formatTaka(actualDueAmount)}
+                  <div className="space-y-1.5 pt-1">
+                    <div className="flex gap-2 items-center">
+                      <input
+                        type="number"
+                        placeholder="Paid Amount"
+                        value={customPaidAmount}
+                        onChange={(e) => setCustomPaidAmount(e.target.value)}
+                        className="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg bg-white font-bold text-xs"
+                      />
+                      {actualPayableAmount > 0 ? (
+                        <div className="text-xs text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-lg font-bold whitespace-nowrap">
+                          Payable: {formatTaka(actualPayableAmount)}
+                        </div>
+                      ) : actualDueAmount > 0 ? (
+                        <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-lg font-bold whitespace-nowrap">
+                          Due: {formatTaka(actualDueAmount)}
+                        </div>
+                      ) : (
+                        <div className="text-xs text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg font-bold whitespace-nowrap">
+                          Exact (৳0)
+                        </div>
+                      )}
                     </div>
+                    {actualPayableAmount > 0 && (
+                      <p className="text-[11px] text-teal-700 font-medium">
+                        💡 Excess <strong>{formatTaka(actualPayableAmount)}</strong> will be recorded as <strong>Payable to Student</strong> (Change Refund / Advance).
+                      </p>
+                    )}
                   </div>
                 )}
 

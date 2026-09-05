@@ -54,7 +54,7 @@ export default function ReportsPage() {
               : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
           }`}
         >
-          <span>Notice Board Due Sheet</span>
+          <span>Notice Board Dues & Payable Sheet</span>
         </button>
 
         <button
@@ -104,44 +104,103 @@ export default function ReportsPage() {
           </div>
         </div>
 
-        {/* 1. Due Sheet */}
+        {/* 1. Dues & Payable Sheet */}
         {reportType === 'due_sheet' && (
-          <div className="space-y-4">
-            <div className="flex justify-between items-center text-xs">
-              <h3 className="font-black text-slate-900 uppercase">
-                Dining Due Notice Sheet — Outstanding Balances
-              </h3>
-              <span className="text-slate-500">Date: {formatDateReadable(todayStr)}</span>
+          <div className="space-y-6">
+            <div className="space-y-3">
+              <div className="flex justify-between items-center text-xs">
+                <h3 className="font-black text-slate-900 uppercase">
+                  1. Dining Due Notice Sheet — Outstanding Balances
+                </h3>
+                <span className="text-slate-500">Date: {formatDateReadable(todayStr)}</span>
+              </div>
+
+              <table className="w-full text-left text-xs border border-slate-300">
+                <thead className="bg-slate-100 uppercase border-b border-slate-300 font-bold">
+                  <tr>
+                    <th className="p-2 border-r border-slate-300">Room</th>
+                    <th className="p-2 border-r border-slate-300">Student Name</th>
+                    <th className="p-2 border-r border-slate-300">Student ID</th>
+                    <th className="p-2 border-r border-slate-300">Department</th>
+                    <th className="p-2 text-right">Outstanding Due</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {dueStudents.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="p-3 text-center text-slate-400 italic">
+                        No outstanding student dues for this period.
+                      </td>
+                    </tr>
+                  ) : (
+                    dueStudents.map((std) => (
+                      <tr key={std.id}>
+                        <td className="p-2 border-r font-bold">{std.block}-{std.room}</td>
+                        <td className="p-2 border-r font-medium">{std.name}</td>
+                        <td className="p-2 border-r text-slate-600">{std.studentId}</td>
+                        <td className="p-2 border-r text-slate-600">{std.department}</td>
+                        <td className="p-2 text-right font-black text-rose-700">{formatTaka(std.balanceDue)}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+                <tfoot className="bg-slate-50 font-black border-t border-slate-300">
+                  <tr>
+                    <td colSpan={4} className="p-2 text-right">Total Outstanding Due:</td>
+                    <td className="p-2 text-right text-rose-700">{formatTaka(stats.totalDue)}</td>
+                  </tr>
+                </tfoot>
+              </table>
             </div>
 
-            <table className="w-full text-left text-xs border border-slate-300">
-              <thead className="bg-slate-100 uppercase border-b border-slate-300 font-bold">
-                <tr>
-                  <th className="p-2 border-r border-slate-300">Room</th>
-                  <th className="p-2 border-r border-slate-300">Student Name</th>
-                  <th className="p-2 border-r border-slate-300">Student ID</th>
-                  <th className="p-2 border-r border-slate-300">Department</th>
-                  <th className="p-2 text-right">Outstanding Due</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200">
-                {dueStudents.map((std) => (
-                  <tr key={std.id}>
-                    <td className="p-2 border-r font-bold">{std.block}-{std.room}</td>
-                    <td className="p-2 border-r font-medium">{std.name}</td>
-                    <td className="p-2 border-r text-slate-600">{std.studentId}</td>
-                    <td className="p-2 border-r text-slate-600">{std.department}</td>
-                    <td className="p-2 text-right font-black text-rose-700">{formatTaka(std.balanceDue)}</td>
+            {/* 2. Payable to Students Sheet */}
+            <div className="space-y-3 pt-2">
+              <div className="flex justify-between items-center text-xs">
+                <h3 className="font-black text-slate-900 uppercase">
+                  2. Mess Payable to Students — Change Shortages & Advances
+                </h3>
+                <span className="text-slate-500">Total Payable: {formatTaka(stats.studentReceivablesTotal)}</span>
+              </div>
+
+              <table className="w-full text-left text-xs border border-slate-300">
+                <thead className="bg-slate-100 uppercase border-b border-slate-300 font-bold">
+                  <tr>
+                    <th className="p-2 border-r border-slate-300">Room</th>
+                    <th className="p-2 border-r border-slate-300">Student Name</th>
+                    <th className="p-2 border-r border-slate-300">Student ID</th>
+                    <th className="p-2 border-r border-slate-300">Department</th>
+                    <th className="p-2 text-right">Payable Amount</th>
                   </tr>
-                ))}
-              </tbody>
-              <tfoot className="bg-slate-50 font-black border-t border-slate-300">
-                <tr>
-                  <td colSpan={4} className="p-2 text-right">Total Outstanding Due:</td>
-                  <td className="p-2 text-right text-rose-700">{formatTaka(stats.totalDue)}</td>
-                </tr>
-              </tfoot>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {students.filter((s) => s.balanceReceivable > 0).length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="p-3 text-center text-slate-400 italic">
+                        No pending payables or refunds owed to students.
+                      </td>
+                    </tr>
+                  ) : (
+                    students
+                      .filter((s) => s.balanceReceivable > 0)
+                      .map((std) => (
+                        <tr key={std.id}>
+                          <td className="p-2 border-r font-bold">{std.block}-{std.room}</td>
+                          <td className="p-2 border-r font-medium">{std.name}</td>
+                          <td className="p-2 border-r text-slate-600">{std.studentId}</td>
+                          <td className="p-2 border-r text-slate-600">{std.department}</td>
+                          <td className="p-2 text-right font-black text-teal-800">{formatTaka(std.balanceReceivable)}</td>
+                        </tr>
+                      ))
+                  )}
+                </tbody>
+                <tfoot className="bg-slate-50 font-black border-t border-slate-300">
+                  <tr>
+                    <td colSpan={4} className="p-2 text-right">Total Payable to Students:</td>
+                    <td className="p-2 text-right text-teal-800">{formatTaka(stats.studentReceivablesTotal)}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
           </div>
         )}
 

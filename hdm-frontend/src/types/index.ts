@@ -58,8 +58,9 @@ export interface MealBooking {
   totalAmount: number;
   paidAmount: number;
   dueAmount: number;
+  payableAmount?: number; // Overpayment / change refund owed to student (৳)
   paymentMethod: 'Cash' | 'bKash' | 'Nagad' | 'Rocket' | 'Due';
-  paymentStatus: 'Paid' | 'Partial' | 'Due';
+  paymentStatus: 'Paid' | 'Partial' | 'Due' | 'Overpaid';
   bookedBy: string;
   createdAt: string;
   notes?: string;
@@ -132,7 +133,9 @@ export interface FeastRegistration {
   totalAmount: number;
   paidAmount: number;
   dueAmount: number;
+  payableAmount?: number; // Overpayment owed to student (৳)
   paymentMethod: 'Cash' | 'bKash' | 'Nagad' | 'Rocket' | 'Due';
+  paymentStatus?: 'Paid' | 'Partial' | 'Due' | 'Overpaid';
   status: 'confirmed' | 'attended' | 'cancelled';
   tokenNumber: number;
   createdAt: string;
