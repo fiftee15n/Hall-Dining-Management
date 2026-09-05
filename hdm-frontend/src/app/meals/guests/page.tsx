@@ -13,7 +13,7 @@ import {
 import { AddGuestMealModal } from '@/components/modals/AddGuestMealModal';
 
 export default function GuestMealsPage() {
-  const { guestMeals, markGuestMealPaid, activePeriodId } = useMess();
+  const { guestMeals, markGuestMealPaid, activePeriodId, activePeriod } = useMess();
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -47,20 +47,27 @@ export default function GuestMealsPage() {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Header */}
-      <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-lg font-bold text-slate-900">Guest Meals</h1>
+      <div className="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-slate-900">Guest Meals & Vouchers</h1>
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">
+              {activePeriod?.name || 'Active Period'}
+            </span>
+          </div>
           <p className="text-xs text-slate-500">
-            Issue dining vouchers for visitors and students&apos; guests
+            Issue dining vouchers for visitors and students&apos; guests at standard period rates:
+            <strong className="text-slate-800 ml-1">Lunch {formatTaka(activePeriod?.lunchPrice || 0)}</strong> ·{' '}
+            <strong className="text-slate-800">Dinner {formatTaka(activePeriod?.dinnerPrice || 0)}</strong>
           </p>
         </div>
 
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-xs transition"
+          className="flex items-center gap-1.5 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-xs transition active:scale-98 self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>+ Add Guest Meal</span>
+          <span>+ Issue Guest Meal</span>
         </button>
       </div>
 

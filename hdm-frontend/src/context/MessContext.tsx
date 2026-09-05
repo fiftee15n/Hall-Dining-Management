@@ -109,7 +109,7 @@ interface MessContextType {
 
   // Guest Meal Actions
   addGuestMeal: (data: {
-    guestName: string;
+    guestName?: string;
     hostStudentName: string;
     block: Student['block'];
     room: string;
@@ -604,7 +604,7 @@ export function MessProvider({ children }: { children: ReactNode }) {
   };
 
   const addGuestMeal = (data: {
-    guestName: string;
+    guestName?: string;
     hostStudentName: string;
     block: Student['block'];
     room: string;
@@ -616,10 +616,16 @@ export function MessProvider({ children }: { children: ReactNode }) {
     note?: string;
   }) => {
     const total = data.quantity * data.unitPrice;
+    const effectiveGuestName =
+      data.guestName?.trim() ||
+      (data.hostStudentName && data.hostStudentName !== 'General Guest'
+        ? `Guest of ${data.hostStudentName}`
+        : 'Guest Visitor');
+
     const newGuestMeal: GuestMeal = {
       id: generateId('guest'),
       periodId: activePeriodId,
-      guestName: data.guestName,
+      guestName: effectiveGuestName,
       hostStudentName: data.hostStudentName,
       block: data.block,
       room: data.room,
