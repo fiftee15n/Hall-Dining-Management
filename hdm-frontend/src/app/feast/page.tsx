@@ -225,105 +225,116 @@ export default function FeastManagementPage() {
       <Modal
         isOpen={showCreateFeastModal}
         onClose={() => setShowCreateFeastModal(false)}
-        title="Schedule Grand Feast"
-        subtitle="Create feast event with pricing and menu"
-        maxWidth="md"
+        title="Schedule Grand Feast Event"
+        subtitle="Create feast event with pricing structure and dinner menu"
+        maxWidth="lg"
       >
-        <form onSubmit={handleCreateFeastSubmit} className="space-y-3 text-xs">
+        <form onSubmit={handleCreateFeastSubmit} className="space-y-4 text-sm">
           <div>
-            <label className="block font-medium text-slate-700 mb-1">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
               Feast Title <span className="text-rose-500">*</span>
             </label>
             <input
               type="text"
               required
-              placeholder="e.g. Grand Shaptahik Kacchi Feast"
+              placeholder="e.g. Grand Shaptahik Mutton Kacchi Feast"
               value={feastTitle}
               onChange={(e) => setFeastTitle(e.target.value)}
-              className="w-full px-3 py-1.5 rounded-lg border border-slate-300"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all font-medium"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Feast Date</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Feast Date</label>
               <input
                 type="date"
                 required
                 value={feastDate}
                 onChange={(e) => setFeastDate(e.target.value)}
-                className="w-full px-3 py-1.5 rounded-lg border border-slate-300"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
               />
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Meal Type</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Meal Shift</label>
               <select
                 value={feastMealType}
                 onChange={(e) => setFeastMealType(e.target.value as any)}
-                className="w-full px-3 py-1.5 rounded-lg border border-slate-300 bg-white"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-medium focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all cursor-pointer"
               >
-                <option value="dinner">Dinner</option>
-                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner Feast</option>
+                <option value="lunch">Lunch Feast</option>
               </select>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Regular Price (৳)</label>
-              <input
-                type="number"
-                min="0"
-                value={regularPrice}
-                onChange={(e) => setRegularPrice(Number(e.target.value))}
-                className="w-full px-2 py-1.5 rounded-lg border border-slate-300 font-bold text-center"
-              />
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Regular Student Price (৳)</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold text-base">
+                  ৳
+                </div>
+                <input
+                  type="number"
+                  min="0"
+                  value={regularPrice}
+                  onChange={(e) => setRegularPrice(Number(e.target.value))}
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 font-bold text-base text-slate-900 bg-white focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
+                />
+              </div>
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Guest Price (৳)</label>
-              <input
-                type="number"
-                min="0"
-                value={guestPrice}
-                onChange={(e) => setGuestPrice(Number(e.target.value))}
-                className="w-full px-2 py-1.5 rounded-lg border border-slate-300 font-bold text-center"
-              />
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Guest Voucher Price (৳)</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold text-base">
+                  ৳
+                </div>
+                <input
+                  type="number"
+                  min="0"
+                  value={guestPrice}
+                  onChange={(e) => setGuestPrice(Number(e.target.value))}
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 font-bold text-base text-slate-900 bg-white focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
+                />
+              </div>
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Max Seats</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Max Seat Capacity</label>
               <input
                 type="number"
                 min="10"
                 value={maxCapacity}
                 onChange={(e) => setMaxCapacity(Number(e.target.value))}
-                className="w-full px-2 py-1.5 rounded-lg border border-slate-300 font-bold text-center"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 font-bold text-base text-slate-900 bg-white text-center focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label className="block font-medium text-slate-700 mb-1">Menu Description</label>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Menu Items & Special Dishes</label>
             <textarea
               rows={2}
               value={menuDescription}
               onChange={(e) => setMenuDescription(e.target.value)}
-              className="w-full px-3 py-1.5 rounded-lg border border-slate-300"
+              placeholder="e.g. Mutton Kacchi Biryani, Borhani, Firni, Shami Kabab, Salad"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
             />
           </div>
 
-          <div className="pt-2 border-t border-slate-100 flex items-center justify-end gap-2">
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2.5">
             <button
               type="button"
               onClick={() => setShowCreateFeastModal(false)}
-              className="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+              className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold text-sm transition"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold"
+              className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-xs transition"
             >
-              Save Feast
+              Save Feast Event
             </button>
           </div>
         </form>
@@ -335,18 +346,18 @@ export default function FeastManagementPage() {
         onClose={() => setShowRegisterModal(false)}
         title="Register Feast Token"
         subtitle={currentFeast ? `${currentFeast.title}` : 'Feast Ticket'}
-        maxWidth="sm"
+        maxWidth="md"
       >
-        <form onSubmit={handleRegisterSubmit} className="space-y-3 text-xs">
+        <form onSubmit={handleRegisterSubmit} className="space-y-4 text-sm">
           <div>
-            <label className="block font-medium text-slate-700 mb-1">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
               Select Resident Student <span className="text-rose-500">*</span>
             </label>
             <select
               required
               value={regStudentId}
               onChange={(e) => setRegStudentId(e.target.value)}
-              className="w-full px-3 py-1.5 rounded-lg border border-slate-300 bg-white"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-medium focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all cursor-pointer"
             >
               <option value="">Choose resident student...</option>
               {students.map((s) => (
@@ -357,44 +368,44 @@ export default function FeastManagementPage() {
             </select>
           </div>
 
-          <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 space-y-1.5">
-            <label className="flex items-center gap-2 cursor-pointer font-semibold">
+          <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/90 space-y-2">
+            <label className="flex items-center gap-2.5 cursor-pointer font-bold text-xs text-slate-800">
               <input
                 type="checkbox"
                 checked={isGuest}
                 onChange={(e) => setIsGuest(e.target.checked)}
-                className="w-3.5 h-3.5 rounded"
+                className="w-4 h-4 rounded text-slate-900"
               />
-              <span>Add Guest Feast Tickets</span>
+              <span>Include Guest Feast Tickets</span>
             </label>
 
             {isGuest && (
-              <div className="flex items-center justify-between pt-1">
-                <span>Guest Count:</span>
+              <div className="flex items-center justify-between pt-2 border-t border-slate-200/70 text-xs">
+                <span className="font-semibold text-slate-600">Extra Guest Count:</span>
                 <input
                   type="number"
                   min="1"
                   max="10"
                   value={guestCount}
                   onChange={(e) => setGuestCount(Number(e.target.value))}
-                  className="w-16 px-2 py-1 border rounded text-center font-bold"
+                  className="w-20 px-3 py-1.5 border border-slate-300 rounded-xl text-center font-bold text-sm bg-white"
                 />
               </div>
             )}
           </div>
 
           <div>
-            <label className="block font-medium text-slate-700 mb-1">Payment Method</label>
-            <div className="grid grid-cols-4 gap-1">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Payment Method</label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {(['Cash', 'bKash', 'Nagad', 'Rocket'] as const).map((method) => (
                 <button
                   type="button"
                   key={method}
                   onClick={() => setRegPaymentMethod(method)}
-                  className={`py-1 rounded font-bold text-xs border ${
+                  className={`py-2 px-3 rounded-xl font-bold text-xs border transition-all ${
                     regPaymentMethod === method
-                      ? 'bg-slate-900 text-white border-slate-900'
-                      : 'bg-slate-50 text-slate-700 border-slate-200'
+                      ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                      : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
                   }`}
                 >
                   {method}
@@ -403,23 +414,23 @@ export default function FeastManagementPage() {
             </div>
           </div>
 
-          <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-            <div className="font-bold">
-              Total: {currentFeast ? formatTaka(currentFeast.regularPrice + (isGuest ? (guestCount || 0) * currentFeast.guestPrice : 0)) : '৳0'}
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-3">
+            <div className="text-sm font-bold text-slate-900">
+              Total Fee: <span className="text-base font-black text-emerald-700">{currentFeast ? formatTaka(currentFeast.regularPrice + (isGuest ? (guestCount || 0) * currentFeast.guestPrice : 0)) : '৳0'}</span>
             </div>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => setShowRegisterModal(false)}
-                className="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+                className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold text-sm transition"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold"
+                className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-xs transition"
               >
-                Issue Ticket
+                Issue Token
               </button>
             </div>
           </div>

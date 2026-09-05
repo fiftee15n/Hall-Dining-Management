@@ -275,12 +275,12 @@ export default function StudentsDirectoryPage() {
         isOpen={showAddStudentModal}
         onClose={() => setShowAddStudentModal(false)}
         title="Add Resident Student"
-        subtitle="Add student record to pre-loaded hall database"
-        maxWidth="md"
+        subtitle="Add new student record to hall dining directory"
+        maxWidth="lg"
       >
-        <form onSubmit={handleAddSubmit} className="space-y-3 text-xs">
+        <form onSubmit={handleAddSubmit} className="space-y-4 text-sm">
           <div>
-            <label className="block font-medium text-slate-700 mb-1">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
               Full Name <span className="text-rose-500">*</span>
             </label>
             <input
@@ -289,40 +289,40 @@ export default function StudentsDirectoryPage() {
               placeholder="e.g. Mahir Faysal"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-1.5 rounded-lg border border-slate-300"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all font-medium"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Student ID</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Student ID / Roll</label>
               <input
                 type="text"
                 placeholder="2022-1-60-101"
                 value={studentId}
                 onChange={(e) => setStudentId(e.target.value)}
-                className="w-full px-3 py-1.5 rounded-lg border border-slate-300"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
               />
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Phone</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Phone Number</label>
               <input
                 type="text"
                 placeholder="01712-345678"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full px-3 py-1.5 rounded-lg border border-slate-300"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Block</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Block / Building</label>
               <select
                 value={block}
                 onChange={(e) => setBlock(e.target.value as any)}
-                className="w-full px-3 py-1.5 rounded-lg border border-slate-300 bg-white font-medium"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white font-medium text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all cursor-pointer"
               >
                 <option value="A">Block A</option>
                 <option value="B">Block B</option>
@@ -331,7 +331,7 @@ export default function StudentsDirectoryPage() {
               </select>
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Room Number <span className="text-rose-500">*</span>
               </label>
               <input
@@ -340,45 +340,45 @@ export default function StudentsDirectoryPage() {
                 placeholder="e.g. 204"
                 value={room}
                 onChange={(e) => setRoom(e.target.value)}
-                className="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-bold"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 font-bold text-sm text-slate-900 focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Department</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Department</label>
               <input
                 type="text"
-                placeholder="e.g. Computer Science"
+                placeholder="e.g. Computer Science & Engineering"
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
-                className="w-full px-3 py-1.5 rounded-lg border border-slate-300"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
               />
             </div>
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Batch</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Batch / Session</label>
               <input
                 type="text"
                 placeholder="e.g. 49"
                 value={batch}
                 onChange={(e) => setBatch(e.target.value)}
-                className="w-full px-3 py-1.5 rounded-lg border border-slate-300"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
               />
             </div>
           </div>
 
-          <div className="pt-2 border-t border-slate-100 flex items-center justify-end gap-2">
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2.5">
             <button
               type="button"
               onClick={() => setShowAddStudentModal(false)}
-              className="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+              className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold text-sm transition"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold"
+              className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-xs transition"
             >
               Save Student
             </button>

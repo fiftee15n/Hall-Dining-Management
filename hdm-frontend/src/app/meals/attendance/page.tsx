@@ -236,42 +236,54 @@ export default function MealAttendancePage() {
           onClose={() => setDueModalData(null)}
           title="Student Due Balance"
           subtitle={`${dueModalData.studentName} (Room ${dueModalData.block}-${dueModalData.room}) has unpaid dining fees`}
-          maxWidth="sm"
+          maxWidth="md"
         >
-          <div className="space-y-3 text-xs">
-            <div className="p-3 bg-amber-50 rounded-xl border border-amber-200">
-              <span className="text-amber-800 font-medium">Outstanding Due:</span>
-              <div className="text-lg font-black text-rose-600 mt-0.5">
+          <div className="space-y-4 text-sm">
+            <div className="p-4 bg-amber-50/80 rounded-2xl border border-amber-200/90 flex items-center justify-between">
+              <div>
+                <span className="text-xs font-bold text-amber-800 uppercase tracking-wider block">
+                  Outstanding Due
+                </span>
+                <p className="text-xs text-amber-700 mt-0.5">Unsettled meals from previous bookings</p>
+              </div>
+              <div className="text-xl font-black text-rose-600">
                 {formatTaka(dueModalData.dueAmount)}
               </div>
             </div>
 
             <div>
-              <label className="block font-medium text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Collect Payment on Spot (৳)
               </label>
-              <input
-                type="number"
-                min="0"
-                max={dueModalData.dueAmount}
-                value={collectAmount}
-                onChange={(e) => setCollectAmount(e.target.value)}
-                className="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-bold"
-              />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold text-base">
+                  ৳
+                </div>
+                <input
+                  type="number"
+                  min="0"
+                  max={dueModalData.dueAmount}
+                  value={collectAmount}
+                  onChange={(e) => setCollectAmount(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 font-bold text-base text-slate-900 bg-white focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
+                />
+              </div>
             </div>
 
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Payment Method</label>
-              <div className="grid grid-cols-4 gap-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Payment Method
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {(['Cash', 'bKash', 'Nagad', 'Rocket'] as const).map((method) => (
                   <button
                     type="button"
                     key={method}
                     onClick={() => setCollectMethod(method)}
-                    className={`py-1 rounded text-xs font-bold border ${
+                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
                       collectMethod === method
-                        ? 'bg-slate-900 text-white border-slate-900'
-                        : 'bg-slate-50 text-slate-700 border-slate-200'
+                        ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
                     }`}
                   >
                     {method}
@@ -280,19 +292,19 @@ export default function MealAttendancePage() {
               </div>
             </div>
 
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+            <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
               <button
                 type="button"
                 onClick={() => handleConfirmDuePayment(false)}
-                className="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50 text-[11px]"
+                className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold text-xs transition"
               >
-                Allow Meal as Due
+                Allow Meal without Payment (Keep Due)
               </button>
 
               <button
                 type="button"
                 onClick={() => handleConfirmDuePayment(true)}
-                className="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs"
+                className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-xs transition"
               >
                 Collect ৳{collectAmount || '0'} & Take Meal
               </button>

@@ -10,6 +10,7 @@ import {
   Download,
   CheckCircle2,
   X,
+  AlertCircle,
 } from 'lucide-react';
 
 interface ImportStudentsCsvModalProps {
@@ -175,32 +176,34 @@ export function ImportStudentsCsvModal({ isOpen, onClose }: ImportStudentsCsvMod
         setImportedCount(null);
         onClose();
       }}
-      title="Import Students from CSV"
-      subtitle="Upload student records with Name, Block, and Room"
-      maxWidth="md"
+      title="Import Student Directory from CSV"
+      subtitle="Bulk upload student resident records with Name, Block, and Room numbers"
+      maxWidth="xl"
     >
       {importedCount !== null ? (
-        <div className="py-8 text-center space-y-3">
-          <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
-            <CheckCircle2 className="w-7 h-7 stroke-[2.5]" />
+        <div className="py-12 text-center space-y-3">
+          <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-xs">
+            <CheckCircle2 className="w-8 h-8 stroke-[2.5]" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-900">Import Successful!</h3>
+            <h3 className="text-base font-bold text-slate-900">Import Successful!</h3>
             <p className="text-xs text-slate-500 mt-1">
-              Successfully imported <strong>{importedCount}</strong> student records into directory.
+              Successfully imported <strong>{importedCount}</strong> student resident records into the hall directory.
             </p>
           </div>
         </div>
       ) : (
-        <div className="space-y-4 text-xs">
+        <div className="space-y-4 text-sm">
           {/* Template Download Banner */}
-          <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <FileSpreadsheet className="w-4 h-4 text-slate-700 flex-shrink-0" />
+          <div className="p-4 bg-slate-50 border border-slate-200/90 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-slate-200/80 text-slate-800">
+                <FileSpreadsheet className="w-5 h-5" />
+              </div>
               <div>
-                <h4 className="font-bold text-slate-900 text-xs">Download CSV Template</h4>
-                <p className="text-[11px] text-slate-500">
-                  Headers required: <strong>name, block, room</strong>
+                <h4 className="font-bold text-slate-900 text-sm">Download Pre-Formatted CSV Template</h4>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Ensure columns include: <strong className="text-slate-800">name, block, room</strong>
                 </p>
               </div>
             </div>
@@ -208,10 +211,10 @@ export function ImportStudentsCsvModal({ isOpen, onClose }: ImportStudentsCsvMod
             <button
               type="button"
               onClick={handleDownloadTemplate}
-              className="flex items-center gap-1 px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-800 font-bold border border-slate-300 rounded-lg text-xs transition shadow-2xs"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-800 font-bold border border-slate-300 rounded-xl text-xs transition shadow-2xs self-start sm:self-auto"
             >
-              <Download className="w-3.5 h-3.5" />
-              <span>Template</span>
+              <Download className="w-4 h-4 text-slate-600" />
+              <span>Download Template</span>
             </button>
           </div>
 
@@ -219,7 +222,7 @@ export function ImportStudentsCsvModal({ isOpen, onClose }: ImportStudentsCsvMod
           {parsedRows.length === 0 ? (
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="p-8 border-2 border-dashed border-slate-300 hover:border-slate-800 rounded-2xl bg-white hover:bg-slate-50/70 text-center cursor-pointer transition flex flex-col items-center justify-center space-y-2"
+              className="p-10 border-2 border-dashed border-slate-300 hover:border-slate-800 rounded-3xl bg-slate-50/40 hover:bg-slate-50 text-center cursor-pointer transition flex flex-col items-center justify-center space-y-3 group"
             >
               <input
                 ref={fileInputRef}
@@ -228,23 +231,23 @@ export function ImportStudentsCsvModal({ isOpen, onClose }: ImportStudentsCsvMod
                 onChange={handleFileChange}
                 className="hidden"
               />
-              <div className="w-10 h-10 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center">
-                <Upload className="w-5 h-5" />
+              <div className="w-14 h-14 rounded-2xl bg-white group-hover:bg-slate-900 group-hover:text-white text-slate-700 border border-slate-200 shadow-xs flex items-center justify-center transition-all">
+                <Upload className="w-6 h-6" />
               </div>
               <div>
-                <p className="font-bold text-slate-900">Click to select or drop CSV file</p>
-                <p className="text-[11px] text-slate-400 mt-0.5">3 columns: Name, Block, Room</p>
+                <p className="font-bold text-slate-900 text-sm">Click to browse or drop your CSV file here</p>
+                <p className="text-xs text-slate-500 mt-1">Accepts standard .csv UTF-8 format</p>
               </div>
             </div>
           ) : (
             /* File & Preview Section */
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-2.5 bg-slate-100 rounded-xl">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between p-3.5 bg-slate-100 rounded-2xl">
+                <div className="flex items-center gap-2.5">
                   <FileSpreadsheet className="w-4 h-4 text-slate-700" />
-                  <span className="font-bold text-slate-900">{fileName}</span>
-                  <span className="text-[11px] text-slate-500">
-                    ({validCount} valid records found)
+                  <span className="font-bold text-slate-900 text-sm">{fileName}</span>
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700">
+                    {validCount} valid records found
                   </span>
                 </div>
 
@@ -254,7 +257,7 @@ export function ImportStudentsCsvModal({ isOpen, onClose }: ImportStudentsCsvMod
                     setParsedRows([]);
                     setFileName('');
                   }}
-                  className="p-1 text-slate-400 hover:text-slate-700"
+                  className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-200 rounded-lg transition"
                   title="Choose another file"
                 >
                   <X className="w-4 h-4" />
@@ -262,30 +265,31 @@ export function ImportStudentsCsvModal({ isOpen, onClose }: ImportStudentsCsvMod
               </div>
 
               {/* Preview Table */}
-              <div className="border border-slate-200 rounded-xl max-h-56 overflow-y-auto">
+              <div className="border border-slate-200/90 rounded-2xl max-h-64 overflow-y-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50 text-[10px] text-slate-500 uppercase border-b border-slate-200 sticky top-0">
+                  <thead className="bg-slate-50 text-[11px] font-bold text-slate-600 uppercase border-b border-slate-200 sticky top-0">
                     <tr>
-                      <th className="p-2.5">Name</th>
-                      <th className="p-2.5">Block</th>
-                      <th className="p-2.5">Room</th>
-                      <th className="p-2.5">Status</th>
+                      <th className="p-3">Student Full Name</th>
+                      <th className="p-3">Block</th>
+                      <th className="p-3">Room No</th>
+                      <th className="p-3">Validation Status</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {parsedRows.map((row, idx) => (
                       <tr key={idx} className={row.isValid ? 'hover:bg-slate-50' : 'bg-rose-50/60'}>
-                        <td className="p-2.5 font-bold text-slate-900">{row.name || '—'}</td>
-                        <td className="p-2.5 font-medium">Block {row.block}</td>
-                        <td className="p-2.5 font-bold text-slate-900">{row.room}</td>
-                        <td className="p-2.5">
+                        <td className="p-3 font-bold text-slate-900">{row.name || '—'}</td>
+                        <td className="p-3 font-medium text-slate-600">Block {row.block}</td>
+                        <td className="p-3 font-bold text-slate-900">{row.room}</td>
+                        <td className="p-3">
                           {row.isValid ? (
-                            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">
+                            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
                               Valid ✓
                             </span>
                           ) : (
-                            <span className="text-[10px] font-bold text-rose-700 bg-rose-100 px-1.5 py-0.5 rounded">
-                              {row.error}
+                            <span className="text-xs font-bold text-rose-700 bg-rose-100 border border-rose-200 px-2 py-0.5 rounded-md flex items-center gap-1 w-fit">
+                              <AlertCircle className="w-3 h-3" />
+                              <span>{row.error}</span>
                             </span>
                           )}
                         </td>
@@ -298,11 +302,11 @@ export function ImportStudentsCsvModal({ isOpen, onClose }: ImportStudentsCsvMod
           )}
 
           {/* Action Buttons */}
-          <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+              className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold text-sm transition"
             >
               Cancel
             </button>
@@ -312,7 +316,7 @@ export function ImportStudentsCsvModal({ isOpen, onClose }: ImportStudentsCsvMod
                 type="button"
                 onClick={handleConfirmImport}
                 disabled={validCount === 0}
-                className="px-4 py-2 bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white font-bold rounded-xl shadow-xs transition"
+                className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white font-bold text-sm rounded-xl shadow-xs transition"
               >
                 Confirm Import ({validCount} Students)
               </button>
@@ -323,3 +327,4 @@ export function ImportStudentsCsvModal({ isOpen, onClose }: ImportStudentsCsvMod
     </Modal>
   );
 }
+

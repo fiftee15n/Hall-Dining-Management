@@ -278,28 +278,32 @@ export default function DuesAndReceivablesPage() {
           onClose={() => setSettleModalData(null)}
           title="Settle Payable / Refund"
           subtitle={`Disburse payable refund of ${formatTaka(settleModalData.amount)} to ${settleModalData.studentName}`}
-          maxWidth="sm"
+          maxWidth="md"
         >
-          <form onSubmit={handleSettleSubmit} className="space-y-3 text-xs">
-            <div className="p-3 bg-teal-50 rounded-xl border border-teal-200">
-              <p className="font-bold text-teal-950">{settleModalData.studentName} ({settleModalData.room})</p>
-              <div className="mt-1 text-base font-black text-teal-900">
+          <form onSubmit={handleSettleSubmit} className="space-y-4 text-sm">
+            <div className="p-4 bg-teal-50/80 rounded-2xl border border-teal-200/90">
+              <p className="font-bold text-teal-950 text-sm">
+                {settleModalData.studentName} ({settleModalData.room})
+              </p>
+              <div className="mt-1 text-lg font-black text-teal-900">
                 Payable Amount: {formatTaka(settleModalData.amount)}
               </div>
             </div>
 
             <div>
-              <label className="block font-medium text-slate-700 mb-1">Disbursement Channel</label>
-              <div className="grid grid-cols-4 gap-1">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Disbursement Channel
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {(['Cash', 'bKash', 'Nagad', 'Rocket'] as const).map((method) => (
                   <button
                     type="button"
                     key={method}
                     onClick={() => setSettleMethod(method)}
-                    className={`py-1 rounded font-bold text-xs border ${
+                    className={`py-2 px-3 rounded-xl font-bold text-xs border transition-all ${
                       settleMethod === method
-                        ? 'bg-slate-900 text-white border-slate-900'
-                        : 'bg-slate-50 text-slate-700 border-slate-200'
+                        ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
                     }`}
                   >
                     {method}
@@ -308,17 +312,17 @@ export default function DuesAndReceivablesPage() {
               </div>
             </div>
 
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-end gap-2">
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2.5">
               <button
                 type="button"
                 onClick={() => setSettleModalData(null)}
-                className="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+                className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold text-sm transition"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-1.5 rounded-lg bg-teal-800 hover:bg-teal-900 text-white font-bold"
+                className="px-5 py-2.5 rounded-xl bg-teal-800 hover:bg-teal-900 text-white font-bold text-sm shadow-xs transition"
               >
                 Confirm Payable Settled
               </button>
@@ -333,18 +337,18 @@ export default function DuesAndReceivablesPage() {
         onClose={() => setShowAddReceivableModal(false)}
         title="Add Change Payable / Refund"
         subtitle="Record change shortage or excess advance owed to student"
-        maxWidth="sm"
+        maxWidth="md"
       >
-        <form onSubmit={handleAddReceivableSubmit} className="space-y-3 text-xs">
+        <form onSubmit={handleAddReceivableSubmit} className="space-y-4 text-sm">
           <div>
-            <label className="block font-medium text-slate-700 mb-1">
-              Select Student <span className="text-rose-500">*</span>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              Select Resident Student <span className="text-rose-500">*</span>
             </label>
             <select
               required
               value={newRecStudentId}
               onChange={(e) => setNewRecStudentId(e.target.value)}
-              className="w-full px-3 py-1.5 rounded-lg border border-slate-300 bg-white"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-medium focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all cursor-pointer"
             >
               <option value="">Choose resident student...</option>
               {students.map((s) => (
@@ -356,42 +360,49 @@ export default function DuesAndReceivablesPage() {
           </div>
 
           <div>
-            <label className="block font-medium text-slate-700 mb-1">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
               Amount Owed (৳) <span className="text-rose-500">*</span>
             </label>
-            <input
-              type="number"
-              required
-              min="1"
-              placeholder="e.g. 30"
-              value={newRecAmount}
-              onChange={(e) => setNewRecAmount(e.target.value)}
-              className="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-bold"
-            />
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold text-base">
+                ৳
+              </div>
+              <input
+                type="number"
+                required
+                min="1"
+                placeholder="e.g. 30"
+                value={newRecAmount}
+                onChange={(e) => setNewRecAmount(e.target.value)}
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 font-bold text-base text-teal-800 bg-white focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
+              />
+            </div>
           </div>
 
           <div>
-            <label className="block font-medium text-slate-700 mb-1">Reason</label>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              Reason / Remarks
+            </label>
             <input
               type="text"
               placeholder="e.g. Paid ৳100 for ৳70 meal, change shortage"
               value={newRecReason}
               onChange={(e) => setNewRecReason(e.target.value)}
-              className="w-full px-3 py-1.5 rounded-lg border border-slate-300"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
             />
           </div>
 
-          <div className="pt-2 border-t border-slate-100 flex items-center justify-end gap-2">
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2.5">
             <button
               type="button"
               onClick={() => setShowAddReceivableModal(false)}
-              className="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+              className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold text-sm transition"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold"
+              className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-xs transition"
             >
               Save Payable Record
             </button>
