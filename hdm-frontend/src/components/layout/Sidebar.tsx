@@ -34,7 +34,7 @@ export function Sidebar() {
     { name: 'Meal Attendance', href: '/meals/attendance', icon: UserCheck, badge: 'Live', badgeColor: 'bg-emerald-100 text-emerald-800' },
     { name: 'Guest Meals', href: '/meals/guests', icon: UserPlus },
     { name: 'Students Directory', href: '/students', icon: Users },
-    { name: 'Dues & Refunds', href: '/students/dues', icon: CreditCard, badge: stats.totalDue > 0 ? `৳${Math.round(stats.totalDue)}` : null, badgeColor: 'bg-amber-100 text-amber-900' },
+    { name: 'Dues & Payable', href: '/students/dues', icon: CreditCard, badge: stats.totalDue > 0 ? `৳${Math.round(stats.totalDue)}` : stats.totalPayable > 0 ? `৳${Math.round(stats.totalPayable)}` : null, badgeColor: stats.totalDue > 0 ? 'bg-amber-100 text-amber-900' : 'bg-teal-100 text-teal-900' },
     { name: 'Grand Feast', href: '/feast', icon: Sparkles },
     { name: 'Bazar & Expenses', href: '/finance/expenses', icon: ShoppingCart },
     { name: 'Payment Receipts', href: '/finance/payments', icon: Receipt },

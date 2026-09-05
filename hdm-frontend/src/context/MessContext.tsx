@@ -44,6 +44,7 @@ export interface MessStats {
   totalExpectedCollection: number;
   totalCollected: number;
   totalDue: number;
+  totalPayable: number;
   totalExpense: number;
   todayExpense: number;
   currentBalance: number;
@@ -357,6 +358,7 @@ export function MessProvider({ children }: { children: ReactNode }) {
     const totalCost = totalLunch * activePeriod.lunchPrice + totalDinner * activePeriod.dinnerPrice;
     const paid = data.paymentMethod === 'Due' ? 0 : data.paidAmount;
     const due = Math.max(0, totalCost - paid);
+    const payable = Math.max(0, paid - totalCost);
 
     const newBooking: MealBooking = {
       id: generateId('book'),
@@ -374,12 +376,31 @@ export function MessProvider({ children }: { children: ReactNode }) {
       totalAmount: totalCost,
       paidAmount: paid,
       dueAmount: due,
+      payableAmount: payable,
       paymentMethod: data.paymentMethod,
-      paymentStatus: due === 0 ? 'Paid' : paid > 0 ? 'Partial' : 'Due',
+      paymentStatus: due === 0 ? (payable > 0 ? 'Overpaid' : 'Paid') : paid > 0 ? 'Partial' : 'Due',
       bookedBy: 'Admin',
       createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
       notes: data.notes,
     };
+
+    let currentReceivables = receivables;
+    if (payable > 0) {
+      const newRec: Receivable = {
+        id: generateId('rec'),
+        periodId: activePeriodId,
+        studentId: student.id,
+        studentName: student.name,
+        block: student.block,
+        room: student.room,
+        amount: payable,
+        reason: `Overpayment change for meal booking #${newBooking.id.slice(-5)} (${totalLunch + totalDinner} meals)`,
+        date: getTodayDateString(),
+        status: 'pending',
+      };
+      currentReceivables = [newRec, ...receivables];
+      setReceivables(currentReceivables);
+    }
 
     const updatedBookings = [newBooking, ...bookings];
     setBookings(updatedBookings);
@@ -399,7 +420,7 @@ export function MessProvider({ children }: { children: ReactNode }) {
         paymentMethod: data.paymentMethod as any,
         referenceId: newBooking.id,
         recordedBy: 'Admin',
-        note: `Booking ${data.startDate} to ${data.endDate} (${totalLunch + totalDinner} meals)`,
+        note: `Booking ${data.startDate} to ${data.endDate} (${totalLunch + totalDinner} meals)${payable > 0 ? ` [Overpaid ৳${payable} recorded as Payable]` : ''}`,
         createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
       };
       setTransactions((prev) => [newTxn, ...prev]);
@@ -442,11 +463,11 @@ export function MessProvider({ children }: { children: ReactNode }) {
     });
 
     setAttendance((prev) => [...newAttendanceRecords, ...prev]);
-    setStudents((prev) => refreshStudentBalances(prev, updatedBookings, receivables));
+    setStudents((prev) => refreshStudentBalances(prev, updatedBookings, currentReceivables));
 
     logAudit(
       'CREATE_BOOKING',
-      `Booked ${totalLunch + totalDinner} meals for ${student.name} (${student.room}). Total: ৳${totalCost}, Paid: ৳${paid}`,
+      `Booked ${totalLunch + totalDinner} meals for ${student.name} (${student.room}). Total: ৳${totalCost}, Paid: ৳${paid}${payable > 0 ? ` (Payable: ৳${payable})` : ''}`,
       'Booking',
       newBooking.id
     );
@@ -776,12 +797,30 @@ export function MessProvider({ children }: { children: ReactNode }) {
       return b;
     });
 
+    let currentReceivables = receivables;
+    if (remainingPayment > 0) {
+      const newRec: Receivable = {
+        id: generateId('rec'),
+        periodId: activePeriodId,
+        studentId: student.id,
+        studentName: student.name,
+        block: student.block,
+        room: student.room,
+        amount: remainingPayment,
+        reason: `Excess overpayment during due clearance`,
+        date: getTodayDateString(),
+        status: 'pending',
+      };
+      currentReceivables = [newRec, ...receivables];
+      setReceivables(currentReceivables);
+    }
+
     setBookings(updatedBookings);
-    setStudents((prev) => refreshStudentBalances(prev, updatedBookings, receivables));
+    setStudents((prev) => refreshStudentBalances(prev, updatedBookings, currentReceivables));
 
     logAudit(
       'MANUAL_PAYMENT',
-      `Recorded payment of ৳${data.amount} for ${student.name} (${student.room})`,
+      `Recorded payment of ৳${data.amount} for ${student.name} (${student.room})${remainingPayment > 0 ? ` (Excess ৳${remainingPayment} added as Payable)` : ''}`,
       'Payment',
       newTxn.id
     );
@@ -888,6 +927,7 @@ export function MessProvider({ children }: { children: ReactNode }) {
     const total = regularCost + guestCost;
     const paid = data.paymentMethod === 'Due' ? 0 : data.paidAmount;
     const due = Math.max(0, total - paid);
+    const payable = Math.max(0, paid - total);
 
     const tokenNumber = (feast.registeredCount || 0) + 101;
 
@@ -904,13 +944,34 @@ export function MessProvider({ children }: { children: ReactNode }) {
       totalAmount: total,
       paidAmount: paid,
       dueAmount: due,
+      payableAmount: payable,
       paymentMethod: data.paymentMethod,
+      paymentStatus: due === 0 ? (payable > 0 ? 'Overpaid' : 'Paid') : paid > 0 ? 'Partial' : 'Due',
       status: 'confirmed',
       tokenNumber,
       createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
     };
 
+    let currentReceivables = receivables;
+    if (payable > 0) {
+      const newRec: Receivable = {
+        id: generateId('rec'),
+        periodId: activePeriodId,
+        studentId: student.id,
+        studentName: student.name,
+        block: student.block,
+        room: student.room,
+        amount: payable,
+        reason: `Overpayment change for feast registration (${feast.title})`,
+        date: getTodayDateString(),
+        status: 'pending',
+      };
+      currentReceivables = [newRec, ...receivables];
+      setReceivables(currentReceivables);
+    }
+
     setFeastRegistrations((prev) => [newReg, ...prev]);
+    setStudents((prev) => refreshStudentBalances(prev, bookings, currentReceivables));
     setFeasts((prev) =>
       prev.map((f) =>
         f.id === feast.id ? { ...f, registeredCount: f.registeredCount + 1 + (data.guestCount || 0) } : f
@@ -1031,6 +1092,7 @@ export function MessProvider({ children }: { children: ReactNode }) {
     totalExpectedCollection,
     totalCollected,
     totalDue,
+    totalPayable: studentReceivablesTotal,
     totalExpense,
     todayExpense,
     currentBalance,
