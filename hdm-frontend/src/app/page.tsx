@@ -1,46 +1,54 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useMess } from '@/context/MessContext';
+import { useAuth } from '@/context/AuthContext';
+import { Student } from '@/types';
 import {
   Utensils,
   Sun,
   Moon,
   Users,
   Wallet,
-  AlertTriangle,
   ShoppingCart,
   DollarSign,
   UserPlus,
   Plus,
-  Receipt,
-  ArrowDownRight,
-  ArrowUpRight,
-  ChevronRight,
-  Sparkles,
   CalendarCheck,
   UserCheck,
   CreditCard,
   Building,
-  TrendingUp,
   Clock,
   ArrowRight,
+  Shield,
+  Settings,
+  ChevronRight,
   CheckCircle2,
+  Layers,
+  Phone,
+  BookOpen,
+  Search,
+  Pencil,
+  Sparkles,
 } from 'lucide-react';
 import { formatTaka } from '@/lib/utils';
 import { QuickActionsModal } from '@/components/modals/QuickActionsModal';
 import { AddExpenseModal } from '@/components/modals/AddExpenseModal';
 import { RecordPaymentModal } from '@/components/modals/RecordPaymentModal';
 import { AddGuestMealModal } from '@/components/modals/AddGuestMealModal';
+import { EditStudentModal } from '@/components/modals/EditStudentModal';
 
 export default function DashboardPage() {
-  const { stats, activePeriod, transactions, bookings, attendance } = useMess();
+  const { stats, activePeriod, periods, students, settings, transactions, bookings, attendance, switchPeriod } = useMess();
+  const { user } = useAuth();
 
   const [showQuickModal, setShowQuickModal] = useState(false);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showGuestModal, setShowGuestModal] = useState(false);
+  const [selectedStudentForEdit, setSelectedStudentForEdit] = useState<Student | null>(null);
+  const [authSearchQuery, setAuthSearchQuery] = useState('');
 
   const recentTransactions = transactions.slice(0, 6);
 
@@ -48,6 +56,311 @@ export default function DashboardPage() {
   const todayTakenLunch = attendance.filter((a) => a.mealType === 'lunch' && a.isTaken).length;
   const todayTakenDinner = attendance.filter((a) => a.mealType === 'dinner' && a.isTaken).length;
 
+  // Filter students for Authority quick table preview
+  const authPreviewStudents = useMemo(() => {
+    const q = authSearchQuery.toLowerCase().trim();
+    if (!q) return students.slice(0, 6);
+    return students
+      .filter(
+        (s) =>
+          s.name.toLowerCase().includes(q) ||
+          s.room.toLowerCase().includes(q) ||
+          `${s.block}-${s.room}`.toLowerCase().includes(q) ||
+          s.studentId.toLowerCase().includes(q) ||
+          s.department.toLowerCase().includes(q)
+      )
+      .slice(0, 6);
+  }, [students, authSearchQuery]);
+
+  // If logged in as Authority, render the Minimalist Authority Portal Dashboard
+  if (user?.role === 'Authority') {
+    const blockACount = students.filter((s) => s.block === 'A').length;
+    const blockBCount = students.filter((s) => s.block === 'B').length;
+    const blockCCount = students.filter((s) => s.block === 'C').length;
+    const blockDCount = students.filter((s) => s.block === 'D').length;
+
+    return (
+      <div className="max-w-6xl mx-auto space-y-6">
+        {/* Minimalist Top Header */}
+        <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-bold text-slate-900 tracking-tight">Authority Portal</h1>
+              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-purple-50 text-purple-900 border border-purple-200/80">
+                Provost Office
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 font-medium">
+              {settings.hallName} · {settings.universityName}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap">
+            <Link
+              href="/management/periods"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold shadow-2xs transition"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>+ Create Period</span>
+            </Link>
+            <Link
+              href="/students"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200/80 text-slate-800 rounded-xl text-xs font-bold border border-slate-200/80 transition"
+            >
+              <Users className="w-3.5 h-3.5 text-slate-600" />
+              <span>Directory</span>
+            </Link>
+            <Link
+              href="/management/settings"
+              className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-semibold border border-slate-200 transition"
+              title="Hall Settings"
+            >
+              <Settings className="w-3.5 h-3.5 text-slate-500" />
+              <span>Settings</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* 4 Minimal Metric Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Card 1: Registered Students */}
+          <Link
+            href="/students"
+            className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:border-slate-300 transition group block"
+          >
+            <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+              <span>Resident Students</span>
+              <Users className="w-4 h-4 text-blue-600" />
+            </div>
+            <div className="mt-2.5 flex items-baseline gap-2">
+              <span className="text-2xl font-black text-slate-900">{students.length}</span>
+              <span className="text-xs text-slate-400">residents</span>
+            </div>
+            <div className="mt-2 text-[11px] text-slate-500 font-medium truncate">
+              A: {blockACount} · B: {blockBCount} · C: {blockCCount} · D: {blockDCount}
+            </div>
+          </Link>
+
+          {/* Card 2: Active Management Period */}
+          <Link
+            href="/management/periods"
+            className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:border-slate-300 transition group block"
+          >
+            <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+              <span>Active Period</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            </div>
+            <div className="mt-2.5">
+              <span className="text-base font-bold text-slate-900 truncate block">
+                {activePeriod?.name || 'Period #05'}
+              </span>
+            </div>
+            <div className="mt-2 text-[11px] text-slate-500 font-medium truncate">
+              {activePeriod?.managedByTeam || 'Committee Lead'}
+            </div>
+          </Link>
+
+          {/* Card 3: Standard Rates */}
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs">
+            <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+              <span>Standard Meal Rates</span>
+              <Clock className="w-4 h-4 text-amber-600" />
+            </div>
+            <div className="mt-2.5 flex items-baseline gap-2">
+              <span className="text-base font-bold text-slate-900">
+                {formatTaka(activePeriod?.lunchPrice || 50)}
+              </span>
+              <span className="text-xs text-slate-400">/</span>
+              <span className="text-base font-bold text-slate-900">
+                {formatTaka(activePeriod?.dinnerPrice || 50)}
+              </span>
+            </div>
+            <div className="mt-2 text-[11px] text-slate-500 font-medium">
+              Lunch & Dinner policy
+            </div>
+          </div>
+
+          {/* Card 4: Hall Identity & Serving Hours */}
+          <Link
+            href="/management/settings"
+            className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:border-slate-300 transition group block"
+          >
+            <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+              <span>Serving Hours</span>
+              <Building className="w-4 h-4 text-slate-500" />
+            </div>
+            <div className="mt-2.5 space-y-1">
+              <span className="text-xs font-bold text-slate-900 block truncate">
+                Lunch: {settings.lunchTime}
+              </span>
+              <span className="text-xs font-bold text-slate-900 block truncate">
+                Dinner: {settings.dinnerTime}
+              </span>
+            </div>
+            <div className="mt-1 text-[11px] text-slate-400 font-medium truncate">
+              Emergency: {settings.contactEmergency || 'Desk'}
+            </div>
+          </Link>
+        </div>
+
+        {/* Two Balanced Governance Columns */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          {/* Left Column: Student Directory Management (7 cols) */}
+          <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200/90 p-5 shadow-2xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+              <div>
+                <h3 className="font-bold text-slate-900 text-sm">Resident Students Directory</h3>
+                <p className="text-xs text-slate-500">Quickly search and update resident information</p>
+              </div>
+
+              <div className="relative w-full sm:w-48">
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+                <input
+                  type="text"
+                  placeholder="Search resident..."
+                  value={authSearchQuery}
+                  onChange={(e) => setAuthSearchQuery(e.target.value)}
+                  className="w-full pl-7 pr-2.5 py-1.5 text-xs rounded-lg border border-slate-200 font-medium focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                />
+              </div>
+            </div>
+
+            {/* Compact Student Table */}
+            <div className="overflow-x-auto border border-slate-100 rounded-xl">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 text-[11px] font-bold text-slate-500 uppercase border-b border-slate-100">
+                  <tr>
+                    <th className="py-2.5 px-3">Room</th>
+                    <th className="py-2.5 px-3">Name</th>
+                    <th className="py-2.5 px-3">Student ID</th>
+                    <th className="py-2.5 px-3">Phone</th>
+                    <th className="py-2.5 px-3 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {authPreviewStudents.map((std) => (
+                    <tr key={std.id} className="hover:bg-slate-50/70 transition">
+                      <td className="py-2 px-3 font-semibold text-slate-800">
+                        {std.block}-{std.room}
+                      </td>
+                      <td className="py-2 px-3 font-bold text-slate-900">{std.name}</td>
+                      <td className="py-2 px-3 text-slate-500">{std.studentId}</td>
+                      <td className="py-2 px-3 text-slate-600">{std.phone}</td>
+                      <td className="py-2 px-3 text-right">
+                        <button
+                          onClick={() => setSelectedStudentForEdit(std)}
+                          className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-semibold rounded-md transition inline-flex items-center gap-1"
+                        >
+                          <Pencil className="w-2.5 h-2.5 text-slate-500" />
+                          <span>Edit</span>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex items-center justify-between pt-1">
+              <span className="text-xs text-slate-400 font-medium">
+                Showing {authPreviewStudents.length} of {students.length} residents
+              </span>
+              <Link
+                href="/students"
+                className="text-xs font-bold text-slate-900 hover:underline flex items-center gap-1"
+              >
+                <span>Full Directory & CSV Import</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Right Column: Management Periods (5 cols) */}
+          <div className="lg:col-span-5 bg-white rounded-2xl border border-slate-200/90 p-5 shadow-2xs space-y-4 flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div>
+                  <h3 className="font-bold text-slate-900 text-sm">Management Periods</h3>
+                  <p className="text-xs text-slate-500">Term committees & rate rotation</p>
+                </div>
+                <Link
+                  href="/management/periods"
+                  className="text-xs font-bold text-slate-800 hover:text-slate-950 hover:underline"
+                >
+                  All Terms →
+                </Link>
+              </div>
+
+              {/* Minimal Period Cards */}
+              <div className="space-y-2.5">
+                {periods.map((p) => {
+                  const isActive = p.id === activePeriod?.id;
+                  return (
+                    <div
+                      key={p.id}
+                      className={`p-3.5 rounded-xl border transition ${
+                        isActive
+                          ? 'bg-slate-50/80 border-slate-900 shadow-2xs'
+                          : 'bg-white border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span className="font-bold text-slate-900 text-xs truncate">{p.name}</span>
+                          {isActive && (
+                            <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 flex-shrink-0">
+                              Active
+                            </span>
+                          )}
+                        </div>
+
+                        {!isActive && (
+                          <button
+                            onClick={() => switchPeriod(p.id)}
+                            className="text-[11px] font-semibold text-slate-600 hover:text-slate-900 hover:underline ml-2"
+                          >
+                            Switch
+                          </button>
+                        )}
+                      </div>
+
+                      <p className="text-[11px] text-slate-500 mt-1 truncate">
+                        {p.managedByTeam} (Lead: {p.teamLead})
+                      </p>
+
+                      <div className="flex items-center justify-between text-[11px] text-slate-400 mt-1.5 pt-1.5 border-t border-slate-100">
+                        <span>📅 {p.startDate} to {p.endDate}</span>
+                        <span className="font-medium text-slate-700">Lunch: ৳{p.lunchPrice} · Dinner: ৳{p.dinnerPrice}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-slate-100">
+              <Link
+                href="/management/periods"
+                className="w-full py-2.5 px-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Create New Management Period</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Direct Edit Modal from Authority Dashboard */}
+        <EditStudentModal
+          student={selectedStudentForEdit}
+          isOpen={!!selectedStudentForEdit}
+          onClose={() => setSelectedStudentForEdit(null)}
+        />
+      </div>
+    );
+  }
+
+  // Management Team & Admin Operational Dashboard
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       {/* Top Welcome & Period Command Card */}
@@ -135,9 +448,9 @@ export default function DashboardPage() {
 
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
             <div className="flex items-center gap-2">
-              <span className="text-amber-700 font-semibold">{stats.todayLunchMeals}L</span>
+              <span className="text-amber-700 font-semibold">{stats.todayLunchMeals} Lunch</span>
               <span className="text-slate-300">·</span>
-              <span className="text-indigo-700 font-semibold">{stats.todayDinnerMeals}D</span>
+              <span className="text-indigo-700 font-semibold">{stats.todayDinnerMeals} Dinner</span>
             </div>
             <Link
               href="/meals/today"
@@ -302,7 +615,7 @@ export default function DashboardPage() {
             {stats.registeredStudentsCount} residents
           </div>
           <p className="text-[11px] text-slate-400 mt-0.5 group-hover:text-slate-700 transition">
-            Click to manage student directory →
+            Click to view student directory →
           </p>
         </Link>
       </div>
@@ -454,4 +767,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

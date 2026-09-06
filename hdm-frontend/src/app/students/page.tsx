@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { useMess } from '@/context/MessContext';
+import { useAuth } from '@/context/AuthContext';
 import { Student } from '@/types';
 import { formatTaka } from '@/lib/utils';
 import {
@@ -9,18 +10,24 @@ import {
   Search,
   Plus,
   Upload,
+  Pencil,
 } from 'lucide-react';
 import { StudentProfileDrawer } from '@/components/modals/StudentProfileDrawer';
 import { Modal } from '@/components/ui/Modal';
 import { ImportStudentsCsvModal } from '@/components/modals/ImportStudentsCsvModal';
+import { EditStudentModal } from '@/components/modals/EditStudentModal';
 
 export default function StudentsDirectoryPage() {
   const { students, addStudent } = useMess();
+  const { user } = useAuth();
+
+  const isAuthority = user?.role === 'Authority';
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBlock, setSelectedBlock] = useState<string>('ALL');
   const [balanceFilter, setBalanceFilter] = useState<'ALL' | 'DUE' | 'PAYABLE'>('ALL');
   const [selectedStudentForDrawer, setSelectedStudentForDrawer] = useState<Student | null>(null);
+  const [selectedStudentForEdit, setSelectedStudentForEdit] = useState<Student | null>(null);
   const [showAddStudentModal, setShowAddStudentModal] = useState(false);
   const [showImportCsvModal, setShowImportCsvModal] = useState(false);
 
@@ -37,6 +44,7 @@ export default function StudentsDirectoryPage() {
     return students.filter((s) => {
       const matchBlock = selectedBlock === 'ALL' || s.block === selectedBlock;
       const matchBalance =
+        isAuthority ||
         balanceFilter === 'ALL' ||
         (balanceFilter === 'DUE' && s.balanceDue > 0) ||
         (balanceFilter === 'PAYABLE' && s.balanceReceivable > 0);
@@ -50,7 +58,7 @@ export default function StudentsDirectoryPage() {
         s.department.toLowerCase().includes(q);
       return matchBlock && matchBalance && matchQuery;
     });
-  }, [students, selectedBlock, balanceFilter, searchQuery]);
+  }, [students, selectedBlock, balanceFilter, searchQuery, isAuthority]);
 
   const dueStudentsCount = useMemo(() => students.filter((s) => s.balanceDue > 0).length, [students]);
   const payableStudentsCount = useMemo(() => students.filter((s) => s.balanceReceivable > 0).length, [students]);
@@ -112,6 +120,7 @@ export default function StudentsDirectoryPage() {
       <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-1.5">
+            {/* Block Filter */}
             <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
               {(['ALL', 'A', 'B', 'C', 'D'] as const).map((b) => (
                 <button
@@ -128,38 +137,41 @@ export default function StudentsDirectoryPage() {
               ))}
             </div>
 
-            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
-              <button
-                onClick={() => setBalanceFilter('ALL')}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
-                  balanceFilter === 'ALL'
-                    ? 'bg-white text-slate-900 shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                All Status
-              </button>
-              <button
-                onClick={() => setBalanceFilter('DUE')}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
-                  balanceFilter === 'DUE'
-                    ? 'bg-white text-rose-700 shadow-2xs'
-                    : 'text-slate-600 hover:text-rose-600'
-                }`}
-              >
-                With Dues ({dueStudentsCount})
-              </button>
-              <button
-                onClick={() => setBalanceFilter('PAYABLE')}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
-                  balanceFilter === 'PAYABLE'
-                    ? 'bg-white text-teal-800 shadow-2xs'
-                    : 'text-slate-600 hover:text-teal-700'
-                }`}
-              >
-                With Payable ({payableStudentsCount})
-              </button>
-            </div>
+            {/* Status / Financial Filter: Hidden for Authority */}
+            {!isAuthority && (
+              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+                <button
+                  onClick={() => setBalanceFilter('ALL')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                    balanceFilter === 'ALL'
+                      ? 'bg-white text-slate-900 shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  All Status
+                </button>
+                <button
+                  onClick={() => setBalanceFilter('DUE')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                    balanceFilter === 'DUE'
+                      ? 'bg-white text-rose-700 shadow-2xs'
+                      : 'text-slate-600 hover:text-rose-600'
+                  }`}
+                >
+                  With Dues ({dueStudentsCount})
+                </button>
+                <button
+                  onClick={() => setBalanceFilter('PAYABLE')}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                    balanceFilter === 'PAYABLE'
+                      ? 'bg-white text-teal-800 shadow-2xs'
+                      : 'text-slate-600 hover:text-teal-700'
+                  }`}
+                >
+                  With Payable ({payableStudentsCount})
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="relative w-full sm:w-64">
@@ -183,8 +195,12 @@ export default function StudentsDirectoryPage() {
                 <th className="p-3">Student ID</th>
                 <th className="p-3">Department & Batch</th>
                 <th className="p-3">Phone</th>
-                <th className="p-3">Dues & Payable</th>
-                <th className="p-3 text-right">Profile</th>
+                {isAuthority ? (
+                  <th className="p-3">Residency Status</th>
+                ) : (
+                  <th className="p-3">Dues & Payable</th>
+                )}
+                <th className="p-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -233,7 +249,11 @@ export default function StudentsDirectoryPage() {
                     <td className="p-3 text-slate-700">{std.department} ({std.batch})</td>
                     <td className="p-3 text-slate-600">{std.phone}</td>
                     <td className="p-3">
-                      {std.balanceDue > 0 ? (
+                      {isAuthority ? (
+                        <span className="inline-flex items-center gap-1 font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 text-[11px]">
+                          {std.status === 'inactive' ? 'On Leave' : 'Active Resident'}
+                        </span>
+                      ) : std.balanceDue > 0 ? (
                         <span className="inline-flex items-center gap-1 font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-100">
                           Due {formatTaka(std.balanceDue)}
                         </span>
@@ -246,9 +266,22 @@ export default function StudentsDirectoryPage() {
                       )}
                     </td>
                     <td className="p-3 text-right">
-                      <button className="text-[11px] font-bold text-slate-700 hover:text-slate-900 underline">
-                        View →
-                      </button>
+                      <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          onClick={() => setSelectedStudentForEdit(std)}
+                          className="px-2.5 py-1 text-xs font-semibold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition flex items-center gap-1"
+                          title="Update Student Info"
+                        >
+                          <Pencil className="w-3 h-3 text-slate-500" />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          onClick={() => setSelectedStudentForDrawer(std)}
+                          className="text-[11px] font-bold text-slate-700 hover:text-slate-900 px-2 py-1 rounded-lg hover:bg-slate-100 transition"
+                        >
+                          View →
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -262,6 +295,14 @@ export default function StudentsDirectoryPage() {
         student={selectedStudentForDrawer}
         isOpen={!!selectedStudentForDrawer}
         onClose={() => setSelectedStudentForDrawer(null)}
+        onEdit={(std) => setSelectedStudentForEdit(std)}
+      />
+
+      {/* Edit Student Modal */}
+      <EditStudentModal
+        student={selectedStudentForEdit}
+        isOpen={!!selectedStudentForEdit}
+        onClose={() => setSelectedStudentForEdit(null)}
       />
 
       {/* CSV Import Modal */}
