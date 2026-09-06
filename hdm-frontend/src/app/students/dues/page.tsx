@@ -2,17 +2,21 @@
 
 import React, { useState, useMemo } from 'react';
 import { useMess } from '@/context/MessContext';
+import { useAuth } from '@/context/AuthContext';
 import { formatTaka } from '@/lib/utils';
 import {
   CreditCard,
   Search,
   Plus,
+  AlertCircle,
+  Shield,
 } from 'lucide-react';
 import { RecordPaymentModal } from '@/components/modals/RecordPaymentModal';
 import { Modal } from '@/components/ui/Modal';
 
 export default function DuesAndReceivablesPage() {
   const { students, receivables, settleReceivable, createReceivable, stats } = useMess();
+  const { user } = useAuth();
 
   const [activeTab, setActiveTab] = useState<'dues' | 'receivables'>('dues');
   const [searchQuery, setSearchQuery] = useState('');
@@ -35,6 +39,8 @@ export default function DuesAndReceivablesPage() {
   const [newRecStudentId, setNewRecStudentId] = useState('');
   const [newRecAmount, setNewRecAmount] = useState('');
   const [newRecReason, setNewRecReason] = useState('');
+
+  const canSettleDues = user?.role === 'Management Team' || user?.role === 'Admin';
 
   const dueStudents = useMemo(() => {
     return students.filter((s) => s.balanceDue > 0);
@@ -70,7 +76,7 @@ export default function DuesAndReceivablesPage() {
 
   const handleSettleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!settleModalData) return;
+    if (!settleModalData || !canSettleDues) return;
 
     settleReceivable(settleModalData.id, settleMethod, settleNote.trim() || undefined);
     setSettleModalData(null);
@@ -78,7 +84,7 @@ export default function DuesAndReceivablesPage() {
 
   const handleAddReceivableSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newRecStudentId || !newRecAmount || Number(newRecAmount) <= 0) return;
+    if (!canSettleDues || !newRecStudentId || !newRecAmount || Number(newRecAmount) <= 0) return;
 
     createReceivable(
       newRecStudentId,
@@ -96,19 +102,41 @@ export default function DuesAndReceivablesPage() {
       {/* Header */}
       <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-lg font-bold text-slate-900">Dues & Payable</h1>
-          <p className="text-xs text-slate-500">
-            Manage student unpaid meal dues and hall payables / change refunds
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg font-bold text-slate-900">Dues & Payable</h1>
+            {!canSettleDues && (
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                View Only
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Overview of student unpaid meal dues and hall payables / change refunds
           </p>
         </div>
 
-        <button
-          onClick={() => setShowAddReceivableModal(true)}
-          className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-xs transition"
-        >
-          + Add Change Payable / Refund
-        </button>
+        {canSettleDues && (
+          <button
+            onClick={() => setShowAddReceivableModal(true)}
+            className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-xs transition"
+          >
+            + Add Change Payable / Refund
+          </button>
+        )}
       </div>
+
+      {/* Authority Notice */}
+      {!canSettleDues && (
+        <div className="p-4 rounded-2xl bg-purple-50 border border-purple-200/80 flex items-start gap-3 text-xs">
+          <Shield className="w-4 h-4 text-purple-700 flex-shrink-0 mt-0.5" />
+          <div className="space-y-0.5">
+            <p className="font-bold text-purple-950">Authority Financial Oversight</p>
+            <p className="text-purple-800 leading-relaxed">
+              Dues collection and change refund disbursement are operational procedures conducted strictly by the student <strong>Management Team</strong>. Authority members can view balances but cannot settle transactions directly.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 gap-4">
@@ -201,12 +229,18 @@ export default function DuesAndReceivablesPage() {
                       <td className="p-3 text-slate-600">{std.department} · {std.phone}</td>
                       <td className="p-3 font-bold text-rose-600">{formatTaka(std.balanceDue)}</td>
                       <td className="p-3 text-right">
-                        <button
-                          onClick={() => setSelectedStudentForPay(std.id)}
-                          className="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-xs"
-                        >
-                          Clear Due
-                        </button>
+                        {canSettleDues ? (
+                          <button
+                            onClick={() => setSelectedStudentForPay(std.id)}
+                            className="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-xs transition"
+                          >
+                            Clear Due
+                          </button>
+                        ) : (
+                          <span className="text-slate-400 text-[11px] font-medium italic">
+                            Managed by Team
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))
@@ -216,7 +250,6 @@ export default function DuesAndReceivablesPage() {
           </div>
         )}
 
-        {/* Tab 2: Receivables Table */}
         {/* Tab 2: Receivables / Payables Table */}
         {activeTab === 'receivables' && (
           <div className="overflow-x-auto border border-slate-200 rounded-xl">
@@ -247,20 +280,26 @@ export default function DuesAndReceivablesPage() {
                       <td className="p-3 text-slate-700 max-w-sm">{r.reason}</td>
                       <td className="p-3 font-bold text-teal-800">{formatTaka(r.amount)}</td>
                       <td className="p-3 text-right">
-                        <button
-                          onClick={() =>
-                            setSettleModalData({
-                              id: r.id,
-                              studentName: r.studentName,
-                              room: `${r.block}-${r.room}`,
-                              amount: r.amount,
-                              reason: r.reason,
-                            })
-                          }
-                          className="px-3 py-1 bg-teal-800 hover:bg-teal-900 text-white font-bold rounded-lg text-xs"
-                        >
-                          Settle / Pay Out
-                        </button>
+                        {canSettleDues ? (
+                          <button
+                            onClick={() =>
+                              setSettleModalData({
+                                id: r.id,
+                                studentName: r.studentName,
+                                room: `${r.block}-${r.room}`,
+                                amount: r.amount,
+                                reason: r.reason,
+                              })
+                            }
+                            className="px-3 py-1 bg-teal-800 hover:bg-teal-900 text-white font-bold rounded-lg text-xs transition"
+                          >
+                            Settle / Pay Out
+                          </button>
+                        ) : (
+                          <span className="text-slate-400 text-[11px] font-medium italic">
+                            Managed by Team
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))
@@ -272,7 +311,7 @@ export default function DuesAndReceivablesPage() {
       </div>
 
       {/* Settle Refund Modal */}
-      {settleModalData && (
+      {settleModalData && canSettleDues && (
         <Modal
           isOpen={true}
           onClose={() => setSettleModalData(null)}
@@ -331,85 +370,87 @@ export default function DuesAndReceivablesPage() {
       )}
 
       {/* Manual Add Receivable Modal */}
-      <Modal
-        isOpen={showAddReceivableModal}
-        onClose={() => setShowAddReceivableModal(false)}
-        title="Add Change Payable / Refund"
-        subtitle="Record change shortage or excess advance owed to student"
-        maxWidth="md"
-      >
-        <form onSubmit={handleAddReceivableSubmit} className="space-y-4 text-sm">
-          <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              Select Resident Student <span className="text-rose-500">*</span>
-            </label>
-            <select
-              required
-              value={newRecStudentId}
-              onChange={(e) => setNewRecStudentId(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-medium focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all cursor-pointer"
-            >
-              <option value="">Choose resident student...</option>
-              {students.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name} ({s.block}-{s.room})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              Amount Owed (৳) <span className="text-rose-500">*</span>
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold text-base">
-                ৳
-              </div>
-              <input
-                type="number"
+      {canSettleDues && (
+        <Modal
+          isOpen={showAddReceivableModal}
+          onClose={() => setShowAddReceivableModal(false)}
+          title="Add Change Payable / Refund"
+          subtitle="Record change shortage or excess advance owed to student"
+          maxWidth="md"
+        >
+          <form onSubmit={handleAddReceivableSubmit} className="space-y-4 text-sm">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Select Resident Student <span className="text-rose-500">*</span>
+              </label>
+              <select
                 required
-                min="1"
-                placeholder="e.g. 30"
-                value={newRecAmount}
-                onChange={(e) => setNewRecAmount(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 font-bold text-base text-teal-800 bg-white focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
+                value={newRecStudentId}
+                onChange={(e) => setNewRecStudentId(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-medium focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all cursor-pointer"
+              >
+                <option value="">Choose resident student...</option>
+                {students.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name} ({s.block}-{s.room})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Amount Owed (৳) <span className="text-rose-500">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 font-bold text-base">
+                  ৳
+                </div>
+                <input
+                  type="number"
+                  required
+                  min="1"
+                  placeholder="e.g. 30"
+                  value={newRecAmount}
+                  onChange={(e) => setNewRecAmount(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 font-bold text-base text-teal-800 bg-white focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Reason / Remarks
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Paid ৳100 for ৳70 meal, change shortage"
+                value={newRecReason}
+                onChange={(e) => setNewRecReason(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
               />
             </div>
-          </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              Reason / Remarks
-            </label>
-            <input
-              type="text"
-              placeholder="e.g. Paid ৳100 for ৳70 meal, change shortage"
-              value={newRecReason}
-              onChange={(e) => setNewRecReason(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all"
-            />
-          </div>
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2.5">
+              <button
+                type="button"
+                onClick={() => setShowAddReceivableModal(false)}
+                className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold text-sm transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-xs transition"
+              >
+                Save Payable Record
+              </button>
+            </div>
+          </form>
+        </Modal>
+      )}
 
-          <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2.5">
-            <button
-              type="button"
-              onClick={() => setShowAddReceivableModal(false)}
-              className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold text-sm transition"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-xs transition"
-            >
-              Save Payable Record
-            </button>
-          </div>
-        </form>
-      </Modal>
-
-      {selectedStudentForPay && (
+      {selectedStudentForPay && canSettleDues && (
         <RecordPaymentModal
           isOpen={true}
           onClose={() => setSelectedStudentForPay(null)}

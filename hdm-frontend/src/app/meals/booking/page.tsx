@@ -409,7 +409,7 @@ export default function MealBookingPage() {
                             : 'bg-slate-50 text-slate-700 border-slate-200'
                         }`}
                       >
-                        {days}D
+                        {days} Days
                       </button>
                     ))}
                   </div>

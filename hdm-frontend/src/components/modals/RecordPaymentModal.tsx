@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useMess } from '@/context/MessContext';
+import { useAuth } from '@/context/AuthContext';
 import { Modal } from '@/components/ui/Modal';
-import { Check, Wallet, AlertCircle } from 'lucide-react';
+import { Check, Wallet, AlertCircle, Shield } from 'lucide-react';
 import { formatTaka } from '@/lib/utils';
 
 interface RecordPaymentModalProps {
@@ -18,6 +19,9 @@ export function RecordPaymentModal({
   defaultStudentId,
 }: RecordPaymentModalProps) {
   const { students, recordManualPayment } = useMess();
+  const { user } = useAuth();
+
+  const canSettleDues = user?.role === 'Management Team' || user?.role === 'Admin';
 
   const [studentId, setStudentId] = useState(defaultStudentId || '');
   const [amount, setAmount] = useState('');
@@ -243,6 +247,13 @@ export function RecordPaymentModal({
             />
           </div>
 
+          {!canSettleDues && (
+            <div className="p-3 bg-purple-50 rounded-xl border border-purple-200 text-xs text-purple-900 flex items-center gap-2">
+              <Shield className="w-4 h-4 text-purple-700 flex-shrink-0" />
+              <span>Dues payment and fee collection can only be logged by the Management Team or System Admin.</span>
+            </div>
+          )}
+
           {/* Action Footer */}
           <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2.5">
             <button
@@ -254,7 +265,7 @@ export function RecordPaymentModal({
             </button>
             <button
               type="submit"
-              disabled={!studentId || !amount || Number(amount) <= 0}
+              disabled={!canSettleDues || !studentId || !amount || Number(amount) <= 0}
               className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white font-bold text-sm shadow-xs transition"
             >
               Confirm Receipt (৳{amount || '0'})
