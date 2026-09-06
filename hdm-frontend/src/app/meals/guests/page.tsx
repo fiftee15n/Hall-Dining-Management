@@ -72,35 +72,35 @@ export default function GuestMealsPage() {
       </div>
 
       {/* Overview Cards */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-[11px] font-medium text-slate-500">Total Guest Meals</span>
-          <div className="text-2xl font-black text-slate-900 mt-0.5">{totalCount}</div>
-          <span className="text-[10px] text-slate-400">{activeGuestMeals.length} Vouchers</span>
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 truncate block">Total Guest Meals</span>
+          <div className="text-lg sm:text-2xl font-black text-slate-900 mt-0.5">{totalCount}</div>
+          <span className="text-[9px] sm:text-[10px] text-slate-400 truncate block">{activeGuestMeals.length} Vouchers</span>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-[11px] font-medium text-slate-500">Paid Revenue</span>
-          <div className="text-2xl font-black text-emerald-700 mt-0.5">{formatTaka(totalCollected)}</div>
-          <span className="text-[10px] text-emerald-600 font-bold">Collected</span>
+        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 truncate block">Paid Revenue</span>
+          <div className="text-lg sm:text-2xl font-black text-emerald-700 mt-0.5 truncate">{formatTaka(totalCollected)}</div>
+          <span className="text-[9px] sm:text-[10px] text-emerald-600 font-bold truncate block">Collected</span>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-[11px] font-medium text-slate-500">Unpaid Due</span>
-          <div className="text-2xl font-black text-rose-700 mt-0.5">{formatTaka(totalDue)}</div>
-          <span className="text-[10px] text-rose-600 font-bold">Pending Collection</span>
+        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 truncate block">Unpaid Due</span>
+          <div className="text-lg sm:text-2xl font-black text-rose-700 mt-0.5 truncate">{formatTaka(totalDue)}</div>
+          <span className="text-[9px] sm:text-[10px] text-rose-600 font-bold truncate block">Pending</span>
         </div>
       </div>
 
       {/* Table Section */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
+      <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 overflow-x-auto pb-1 max-w-full">
             {(['all', 'Paid', 'Due'] as const).map((st) => (
               <button
                 key={st}
                 onClick={() => setFilterStatus(st)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition capitalize ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition capitalize whitespace-nowrap ${
                   filterStatus === st
                     ? 'bg-slate-900 text-white'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -124,7 +124,7 @@ export default function GuestMealsPage() {
         </div>
 
         <div className="overflow-x-auto border border-slate-200 rounded-xl">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[620px] text-left text-xs">
             <thead className="bg-slate-50 text-[11px] text-slate-500 uppercase border-b border-slate-200">
               <tr>
                 <th className="p-3">Date</th>

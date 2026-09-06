@@ -52,7 +52,7 @@ export default function FinancialSummaryPage() {
       </div>
 
       {/* Main Statement Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-6">
+      <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-6">
         <div>
           <h2 className="text-base font-bold text-slate-900">Statement of Dining Accounts</h2>
           <p className="text-xs text-slate-500">
@@ -64,7 +64,7 @@ export default function FinancialSummaryPage() {
         <div className="space-y-4 text-xs">
           {/* 1. Opening Balance */}
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between font-bold">
-            <span className="text-slate-700">1. Opening Balance Received (from Previous Term)</span>
+            <span className="text-slate-700">1. Opening Balance (Previous Term)</span>
             <span className="text-slate-900 text-sm">{formatTaka(activePeriod?.openingBalance || 0)}</span>
           </div>
 
@@ -102,23 +102,23 @@ export default function FinancialSummaryPage() {
                 <span className="font-semibold text-slate-900">{formatTaka(stats.totalExpense)}</span>
               </div>
               <div className="flex justify-between text-slate-600">
-                <span>• Student Change Shortage Refunds Disbursed</span>
+                <span>• Student Change Refunds Disbursed</span>
                 <span className="font-semibold text-slate-900">{formatTaka(totalSettledRefunds)}</span>
               </div>
             </div>
           </div>
 
           {/* 4. Final Cash in Hand */}
-          <div className="p-4 bg-slate-900 text-white rounded-xl flex items-center justify-between">
+          <div className="p-3.5 sm:p-4 bg-slate-900 text-white rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block">
+              <span className="text-[10px] sm:text-[11px] text-slate-400 font-bold uppercase tracking-wider block">
                 4. Verified Closing Cash in Hand
               </span>
-              <p className="text-[11px] text-slate-300 mt-0.5">
-                Formula: Opening Balance (৳{activePeriod?.openingBalance || 0}) + Collections (৳{stats.totalCollected}) - Expenses (৳{stats.totalExpense})
+              <p className="text-[10px] sm:text-[11px] text-slate-300 mt-0.5">
+                Formula: Opening + Collections - Expenses
               </p>
             </div>
-            <div className="text-xl font-black text-emerald-400">
+            <div className="text-lg sm:text-xl font-black text-emerald-400">
               {formatTaka(stats.currentBalance)}
             </div>
           </div>

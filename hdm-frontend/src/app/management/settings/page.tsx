@@ -90,7 +90,7 @@ export default function SettingsPage() {
       )}
 
       {/* Settings Form */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
+      <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs">
         <form onSubmit={handleSave} className="space-y-4 text-xs">
           <div>
             <label className="block font-bold text-slate-700 mb-1">Dining Hall Name</label>
@@ -116,7 +116,7 @@ export default function SettingsPage() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block font-bold text-slate-700 mb-1">Lunch Serving Time</label>
               <input

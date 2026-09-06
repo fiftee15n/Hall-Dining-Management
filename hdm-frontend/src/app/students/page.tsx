@@ -119,14 +119,14 @@ export default function StudentsDirectoryPage() {
       {/* Filter and Table Card */}
       <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-1.5 max-w-full overflow-x-auto pb-1">
             {/* Block Filter */}
             <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
               {(['ALL', 'A', 'B', 'C', 'D'] as const).map((b) => (
                 <button
                   key={b}
                   onClick={() => setSelectedBlock(b)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition whitespace-nowrap ${
                     selectedBlock === b
                       ? 'bg-white text-slate-900 shadow-2xs'
                       : 'text-slate-600 hover:text-slate-900'
@@ -142,7 +142,7 @@ export default function StudentsDirectoryPage() {
               <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
                 <button
                   onClick={() => setBalanceFilter('ALL')}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition whitespace-nowrap ${
                     balanceFilter === 'ALL'
                       ? 'bg-white text-slate-900 shadow-2xs'
                       : 'text-slate-600 hover:text-slate-900'
@@ -152,23 +152,23 @@ export default function StudentsDirectoryPage() {
                 </button>
                 <button
                   onClick={() => setBalanceFilter('DUE')}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition whitespace-nowrap ${
                     balanceFilter === 'DUE'
                       ? 'bg-white text-rose-700 shadow-2xs'
                       : 'text-slate-600 hover:text-rose-600'
                   }`}
                 >
-                  With Dues ({dueStudentsCount})
+                  Dues ({dueStudentsCount})
                 </button>
                 <button
                   onClick={() => setBalanceFilter('PAYABLE')}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition whitespace-nowrap ${
                     balanceFilter === 'PAYABLE'
                       ? 'bg-white text-teal-800 shadow-2xs'
                       : 'text-slate-600 hover:text-teal-700'
                   }`}
                 >
-                  With Payable ({payableStudentsCount})
+                  Payable ({payableStudentsCount})
                 </button>
               </div>
             )}
@@ -187,7 +187,7 @@ export default function StudentsDirectoryPage() {
         </div>
 
         <div className="overflow-x-auto border border-slate-200 rounded-xl">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[650px] text-left text-xs">
             <thead className="bg-slate-50 text-[11px] text-slate-500 uppercase border-b border-slate-200">
               <tr>
                 <th className="p-3">Room / Block</th>

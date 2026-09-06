@@ -265,8 +265,8 @@ export function ImportStudentsCsvModal({ isOpen, onClose }: ImportStudentsCsvMod
               </div>
 
               {/* Preview Table */}
-              <div className="border border-slate-200/90 rounded-2xl max-h-64 overflow-y-auto">
-                <table className="w-full text-left text-xs">
+              <div className="border border-slate-200/90 rounded-2xl max-h-64 overflow-y-auto overflow-x-auto">
+                <table className="w-full text-left text-xs min-w-[420px]">
                   <thead className="bg-slate-50 text-[11px] font-bold text-slate-600 uppercase border-b border-slate-200 sticky top-0">
                     <tr>
                       <th className="p-3">Student Full Name</th>

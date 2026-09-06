@@ -84,25 +84,25 @@ export default function TodaysMealBoardPage() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-[11px] font-medium text-slate-500">Total Booked</span>
-          <div className="text-2xl font-black text-slate-900 mt-0.5">{totalRegistered}</div>
-          <span className="text-[10px] text-slate-400">Residents + {totalGuestQty} Guests</span>
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 truncate block">Total Booked</span>
+          <div className="text-lg sm:text-2xl font-black text-slate-900 mt-0.5">{totalRegistered}</div>
+          <span className="text-[9px] sm:text-[10px] text-slate-400 truncate block">+{totalGuestQty} Guests</span>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-[11px] font-medium text-slate-500">Served</span>
-          <div className="text-2xl font-black text-emerald-700 mt-0.5">{totalTaken}</div>
-          <span className="text-[10px] text-emerald-600 font-bold">
+        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 truncate block">Served</span>
+          <div className="text-lg sm:text-2xl font-black text-emerald-700 mt-0.5">{totalTaken}</div>
+          <span className="text-[9px] sm:text-[10px] text-emerald-600 font-bold truncate block">
             {totalRegistered > 0 ? Math.round((totalTaken / totalRegistered) * 100) : 0}% Served
           </span>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-[11px] font-medium text-slate-500">Remaining</span>
-          <div className="text-2xl font-black text-amber-700 mt-0.5">{totalRemaining}</div>
-          <span className="text-[10px] text-slate-400">In Queue</span>
+        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 truncate block">Remaining</span>
+          <div className="text-lg sm:text-2xl font-black text-amber-700 mt-0.5">{totalRemaining}</div>
+          <span className="text-[9px] sm:text-[10px] text-slate-400 truncate block">In Queue</span>
         </div>
       </div>
 

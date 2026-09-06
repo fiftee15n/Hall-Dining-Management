@@ -152,6 +152,11 @@ interface MessContextType {
   // Settings & Reset
   updateSettings: (settings: Partial<HallSettings>) => void;
   resetToDefaultData: () => void;
+
+  // Mobile Drawer Navigation
+  isMobileNavOpen: boolean;
+  setIsMobileNavOpen: (open: boolean) => void;
+  toggleMobileNav: () => void;
 }
 
 const MessContext = createContext<MessContextType | undefined>(undefined);
@@ -160,6 +165,7 @@ const LOCAL_STORAGE_KEY = 'gau_female_hall_residents_v2';
 
 export function MessProvider({ children }: { children: ReactNode }) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [activePeriodId, setActivePeriodId] = useState<string>('period-01');
   const [periods, setPeriods] = useState<ManagementPeriod[]>(INITIAL_MANAGEMENT_PERIODS);
   const [students, setStudents] = useState<Student[]>(INITIAL_STUDENTS);
@@ -1169,6 +1175,9 @@ export function MessProvider({ children }: { children: ReactNode }) {
         updateSettings,
         resetPeriodPassword,
         resetToDefaultData,
+        isMobileNavOpen,
+        setIsMobileNavOpen,
+        toggleMobileNav: () => setIsMobileNavOpen((prev) => !prev),
       }}
     >
       {children}

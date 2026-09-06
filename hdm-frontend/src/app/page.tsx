@@ -122,83 +122,83 @@ export default function DashboardPage() {
         </div>
 
         {/* 4 Minimal Metric Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {/* Card 1: Registered Students */}
           <Link
             href="/students"
-            className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:border-slate-300 transition group block"
+            className="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:border-slate-300 transition group block"
           >
             <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
-              <span>Resident Students</span>
-              <Users className="w-4 h-4 text-blue-600" />
+              <span className="truncate">Residents</span>
+              <Users className="w-4 h-4 text-blue-600 flex-shrink-0" />
             </div>
-            <div className="mt-2.5 flex items-baseline gap-2">
-              <span className="text-2xl font-black text-slate-900">{students.length}</span>
-              <span className="text-xs text-slate-400">residents</span>
+            <div className="mt-2 sm:mt-2.5 flex items-baseline gap-1.5 sm:gap-2">
+              <span className="text-xl sm:text-2xl font-black text-slate-900">{students.length}</span>
+              <span className="text-[11px] sm:text-xs text-slate-400">students</span>
             </div>
-            <div className="mt-2 text-[11px] text-slate-500 font-medium truncate">
-              A: {blockACount} · B: {blockBCount} · C: {blockCCount} · D: {blockDCount}
+            <div className="mt-1.5 sm:mt-2 text-[10px] sm:text-[11px] text-slate-500 font-medium truncate">
+              A:{blockACount} B:{blockBCount} C:{blockCCount} D:{blockDCount}
             </div>
           </Link>
 
           {/* Card 2: Active Management Period */}
           <Link
             href="/management/periods"
-            className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:border-slate-300 transition group block"
+            className="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:border-slate-300 transition group block"
           >
             <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
-              <span>Active Period</span>
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="truncate">Active Term</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
             </div>
-            <div className="mt-2.5">
-              <span className="text-base font-bold text-slate-900 truncate block">
+            <div className="mt-2 sm:mt-2.5">
+              <span className="text-sm sm:text-base font-bold text-slate-900 truncate block">
                 {activePeriod?.name || 'Period #05'}
               </span>
             </div>
-            <div className="mt-2 text-[11px] text-slate-500 font-medium truncate">
+            <div className="mt-1.5 sm:mt-2 text-[10px] sm:text-[11px] text-slate-500 font-medium truncate">
               {activePeriod?.managedByTeam || 'Committee Lead'}
             </div>
           </Link>
 
           {/* Card 3: Standard Rates */}
-          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs">
+          <div className="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs">
             <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
-              <span>Standard Meal Rates</span>
-              <Clock className="w-4 h-4 text-amber-600" />
+              <span className="truncate">Meal Rates</span>
+              <Clock className="w-4 h-4 text-amber-600 flex-shrink-0" />
             </div>
-            <div className="mt-2.5 flex items-baseline gap-2">
-              <span className="text-base font-bold text-slate-900">
+            <div className="mt-2 sm:mt-2.5 flex items-baseline gap-1 sm:gap-2">
+              <span className="text-sm sm:text-base font-bold text-slate-900">
                 {formatTaka(activePeriod?.lunchPrice || 50)}
               </span>
               <span className="text-xs text-slate-400">/</span>
-              <span className="text-base font-bold text-slate-900">
+              <span className="text-sm sm:text-base font-bold text-slate-900">
                 {formatTaka(activePeriod?.dinnerPrice || 50)}
               </span>
             </div>
-            <div className="mt-2 text-[11px] text-slate-500 font-medium">
-              Lunch & Dinner policy
+            <div className="mt-1.5 sm:mt-2 text-[10px] sm:text-[11px] text-slate-500 font-medium truncate">
+              Lunch & Dinner
             </div>
           </div>
 
           {/* Card 4: Hall Identity & Serving Hours */}
           <Link
             href="/management/settings"
-            className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:border-slate-300 transition group block"
+            className="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:border-slate-300 transition group block"
           >
             <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
-              <span>Serving Hours</span>
-              <Building className="w-4 h-4 text-slate-500" />
+              <span className="truncate">Serving Hours</span>
+              <Building className="w-4 h-4 text-slate-500 flex-shrink-0" />
             </div>
-            <div className="mt-2.5 space-y-1">
-              <span className="text-xs font-bold text-slate-900 block truncate">
-                Lunch: {settings.lunchTime}
+            <div className="mt-2 sm:mt-2.5 space-y-0.5">
+              <span className="text-[11px] sm:text-xs font-bold text-slate-900 block truncate">
+                L: {settings.lunchTime}
               </span>
-              <span className="text-xs font-bold text-slate-900 block truncate">
-                Dinner: {settings.dinnerTime}
+              <span className="text-[11px] sm:text-xs font-bold text-slate-900 block truncate">
+                D: {settings.dinnerTime}
               </span>
             </div>
-            <div className="mt-1 text-[11px] text-slate-400 font-medium truncate">
-              Emergency: {settings.contactEmergency || 'Desk'}
+            <div className="mt-1 text-[10px] sm:text-[11px] text-slate-400 font-medium truncate">
+              Help: {settings.contactEmergency || 'Desk'}
             </div>
           </Link>
         </div>
@@ -364,20 +364,20 @@ export default function DashboardPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       {/* Top Welcome & Period Command Card */}
-      <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200/90 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+      <div className="bg-white p-4 sm:p-7 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-5">
         <div className="space-y-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200/80 flex items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <span className="text-[11px] sm:text-xs font-bold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200/80 flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>Active Management Period</span>
             </span>
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">
+            <span className="text-[11px] sm:text-xs font-semibold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg bg-slate-100 text-slate-700">
               {activePeriod?.startDate} to {activePeriod?.endDate}
             </span>
           </div>
 
           <div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
               {activePeriod?.name || 'Management Period #05'}
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
@@ -388,73 +388,73 @@ export default function DashboardPage() {
 
           {/* Rate Pills */}
           <div className="flex flex-wrap items-center gap-2 pt-1">
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-200/70">
-              <Sun className="w-3.5 h-3.5 text-amber-600" />
-              <span>Lunch Rate: {formatTaka(activePeriod?.lunchPrice || 0)}</span>
+            <span className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-200/70">
+              <Sun className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
+              <span>Lunch: {formatTaka(activePeriod?.lunchPrice || 0)}</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-lg bg-indigo-50 text-indigo-900 border border-indigo-200/70">
-              <Moon className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Dinner Rate: {formatTaka(activePeriod?.dinnerPrice || 0)}</span>
+            <span className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1 rounded-lg bg-indigo-50 text-indigo-900 border border-indigo-200/70">
+              <Moon className="w-3.5 h-3.5 text-indigo-600 flex-shrink-0" />
+              <span>Dinner: {formatTaka(activePeriod?.dinnerPrice || 0)}</span>
             </span>
           </div>
         </div>
 
         {/* Primary Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 pt-1 lg:pt-0">
           <button
             onClick={() => setShowQuickModal(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-bold shadow-xs hover:shadow-md transition active:scale-98"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs hover:shadow-md transition active:scale-98"
           >
             <Plus className="w-4 h-4" />
             <span>+ Quick Action</span>
           </button>
           <Link
             href="/meals/booking"
-            className="flex items-center gap-1.5 px-4 py-2.5 bg-slate-100 hover:bg-slate-200/80 text-slate-800 rounded-xl text-sm font-bold border border-slate-200/80 transition"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 bg-slate-100 hover:bg-slate-200/80 text-slate-800 rounded-xl text-xs sm:text-sm font-bold border border-slate-200/80 transition"
           >
             <CalendarCheck className="w-4 h-4 text-slate-600" />
             <span>Book Meals</span>
           </Link>
           <Link
             href="/meals/attendance"
-            className="flex items-center gap-1.5 px-4 py-2.5 bg-slate-100 hover:bg-slate-200/80 text-slate-800 rounded-xl text-sm font-bold border border-slate-200/80 transition"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 bg-slate-100 hover:bg-slate-200/80 text-slate-800 rounded-xl text-xs sm:text-sm font-bold border border-slate-200/80 transition"
           >
             <UserCheck className="w-4 h-4 text-slate-600" />
-            <span>Live Attendance</span>
+            <span>Attendance</span>
           </Link>
         </div>
       </div>
 
       {/* Main 4 Hero KPI Overview Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
         {/* Today's Total Meals */}
-        <div className="bg-white p-5 rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition flex flex-col justify-between group">
+        <div className="bg-white p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition flex flex-col justify-between group">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Today&apos;s Meals
               </span>
-              <div className="p-2 rounded-xl bg-blue-50 text-blue-700 border border-blue-100">
-                <Utensils className="w-4 h-4" />
+              <div className="p-1.5 sm:p-2 rounded-xl bg-blue-50 text-blue-700 border border-blue-100 flex-shrink-0">
+                <Utensils className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
             </div>
-            <div className="mt-3 flex items-baseline gap-2">
-              <h3 className="text-3xl font-black text-slate-900 tracking-tight">
+            <div className="mt-2 sm:mt-3 flex items-baseline gap-1.5 sm:gap-2">
+              <h3 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">
                 {stats.todayTotalMeals}
               </h3>
-              <span className="text-xs font-medium text-slate-500">meals scheduled</span>
+              <span className="text-[10px] sm:text-xs font-medium text-slate-500">meals</span>
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
-            <div className="flex items-center gap-2">
-              <span className="text-amber-700 font-semibold">{stats.todayLunchMeals} Lunch</span>
+          <div className="mt-3 sm:mt-4 pt-2.5 sm:pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] sm:text-xs text-slate-600">
+            <div className="flex items-center gap-1 sm:gap-2 truncate">
+              <span className="text-amber-700 font-semibold">{stats.todayLunchMeals}L</span>
               <span className="text-slate-300">·</span>
-              <span className="text-indigo-700 font-semibold">{stats.todayDinnerMeals} Dinner</span>
+              <span className="text-indigo-700 font-semibold">{stats.todayDinnerMeals}D</span>
             </div>
             <Link
               href="/meals/today"
-              className="font-bold text-slate-900 hover:text-blue-600 flex items-center gap-1 group-hover:underline"
+              className="font-bold text-slate-900 hover:text-blue-600 flex items-center gap-1 group-hover:underline flex-shrink-0"
             >
               <span>Board</span>
               <ArrowRight className="w-3 h-3" />
@@ -463,28 +463,28 @@ export default function DashboardPage() {
         </div>
 
         {/* Total Collected Cash */}
-        <div className="bg-white p-5 rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition flex flex-col justify-between group">
+        <div className="bg-white p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition flex flex-col justify-between group">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Total Collections
               </span>
-              <div className="p-2 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100">
-                <DollarSign className="w-4 h-4" />
+              <div className="p-1.5 sm:p-2 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100 flex-shrink-0">
+                <DollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
             </div>
-            <div className="mt-3 flex items-baseline gap-2">
-              <h3 className="text-3xl font-black text-emerald-800 tracking-tight">
+            <div className="mt-2 sm:mt-3 flex items-baseline gap-2">
+              <h3 className="text-xl sm:text-3xl font-black text-emerald-800 tracking-tight truncate">
                 {formatTaka(stats.totalCollected)}
               </h3>
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
-            <span className="text-slate-500">{bookings.length} resident booking(s)</span>
+          <div className="mt-3 sm:mt-4 pt-2.5 sm:pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] sm:text-xs text-slate-600">
+            <span className="text-slate-500 truncate">{bookings.length} booking(s)</span>
             <Link
               href="/finance/payments"
-              className="font-bold text-emerald-800 hover:text-emerald-950 flex items-center gap-1 group-hover:underline"
+              className="font-bold text-emerald-800 hover:text-emerald-950 flex items-center gap-1 group-hover:underline flex-shrink-0"
             >
               <span>Receipts</span>
               <ArrowRight className="w-3 h-3" />
@@ -493,58 +493,58 @@ export default function DashboardPage() {
         </div>
 
         {/* Total Bazar / Market Expenses */}
-        <div className="bg-white p-5 rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition flex flex-col justify-between group">
+        <div className="bg-white p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition flex flex-col justify-between group">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Total Bazar Expenses
+              <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Total Expenses
               </span>
-              <div className="p-2 rounded-xl bg-rose-50 text-rose-700 border border-rose-100">
-                <ShoppingCart className="w-4 h-4" />
+              <div className="p-1.5 sm:p-2 rounded-xl bg-rose-50 text-rose-700 border border-rose-100 flex-shrink-0">
+                <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
             </div>
-            <div className="mt-3 flex items-baseline gap-2">
-              <h3 className="text-3xl font-black text-rose-800 tracking-tight">
+            <div className="mt-2 sm:mt-3 flex items-baseline gap-2">
+              <h3 className="text-xl sm:text-3xl font-black text-rose-800 tracking-tight truncate">
                 {formatTaka(stats.totalExpense)}
               </h3>
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
-            <span className="text-slate-500">Today: {formatTaka(stats.todayExpense)}</span>
+          <div className="mt-3 sm:mt-4 pt-2.5 sm:pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] sm:text-xs text-slate-600">
+            <span className="text-slate-500 truncate">Today: {formatTaka(stats.todayExpense)}</span>
             <Link
               href="/finance/expenses"
-              className="font-bold text-rose-800 hover:text-rose-950 flex items-center gap-1 group-hover:underline"
+              className="font-bold text-rose-800 hover:text-rose-950 flex items-center gap-1 group-hover:underline flex-shrink-0"
             >
-              <span>Expenses</span>
+              <span>Bazar</span>
               <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
         </div>
 
         {/* Cash in Hand */}
-        <div className="bg-white p-5 rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition flex flex-col justify-between group">
+        <div className="bg-white p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition flex flex-col justify-between group">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Cash in Hand
               </span>
-              <div className="p-2 rounded-xl bg-slate-100 text-slate-800 border border-slate-200">
-                <Wallet className="w-4 h-4" />
+              <div className="p-1.5 sm:p-2 rounded-xl bg-slate-100 text-slate-800 border border-slate-200 flex-shrink-0">
+                <Wallet className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
             </div>
-            <div className="mt-3 flex items-baseline gap-2">
-              <h3 className="text-3xl font-black text-slate-900 tracking-tight">
+            <div className="mt-2 sm:mt-3 flex items-baseline gap-2">
+              <h3 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight truncate">
                 {formatTaka(stats.currentBalance)}
               </h3>
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
-            <span className="text-slate-500">Opening: {formatTaka(activePeriod?.openingBalance || 0)}</span>
+          <div className="mt-3 sm:mt-4 pt-2.5 sm:pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] sm:text-xs text-slate-600">
+            <span className="text-slate-500 truncate">Open: {formatTaka(activePeriod?.openingBalance || 0)}</span>
             <Link
               href="/finance/ledger"
-              className="font-bold text-slate-900 hover:text-slate-700 flex items-center gap-1 group-hover:underline"
+              className="font-bold text-slate-900 hover:text-slate-700 flex items-center gap-1 group-hover:underline flex-shrink-0"
             >
               <span>Ledger</span>
               <ArrowRight className="w-3 h-3" />
@@ -554,68 +554,68 @@ export default function DashboardPage() {
       </div>
 
       {/* Secondary Financial & Insight Metric Tiles */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
         <Link
           href="/students/dues"
-          className="p-4 bg-white rounded-2xl border border-slate-200/90 hover:border-amber-400/90 transition shadow-2xs hover:shadow-xs block group"
+          className="p-3 sm:p-4 bg-white rounded-xl sm:rounded-2xl border border-slate-200/90 hover:border-amber-400/90 transition shadow-2xs hover:shadow-xs block group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Student Dues (Owed to Mess)</span>
-            <span className="w-2 h-2 rounded-full bg-amber-500" />
+            <span className="text-[11px] sm:text-xs font-semibold text-slate-500 truncate">Student Dues</span>
+            <span className="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0" />
           </div>
-          <div className="text-lg font-black text-amber-900 mt-1">
+          <div className="text-base sm:text-lg font-black text-amber-900 mt-1 truncate">
             {formatTaka(stats.totalDue)}
           </div>
-          <p className="text-[11px] text-slate-400 mt-0.5 group-hover:text-amber-700 transition">
-            Click to view student unpaid list →
+          <p className="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 group-hover:text-amber-700 transition truncate">
+            View unpaid dues →
           </p>
         </Link>
 
         <Link
           href="/students/dues"
-          className="p-4 bg-white rounded-2xl border border-slate-200/90 hover:border-teal-400/90 transition shadow-2xs hover:shadow-xs block group"
+          className="p-3 sm:p-4 bg-white rounded-xl sm:rounded-2xl border border-slate-200/90 hover:border-teal-400/90 transition shadow-2xs hover:shadow-xs block group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Mess Payable (Owed to Students)</span>
-            <span className="w-2 h-2 rounded-full bg-teal-500" />
+            <span className="text-[11px] sm:text-xs font-semibold text-slate-500 truncate">Mess Payable</span>
+            <span className="w-2 h-2 rounded-full bg-teal-500 flex-shrink-0" />
           </div>
-          <div className="text-lg font-black text-teal-800 mt-1">
+          <div className="text-base sm:text-lg font-black text-teal-800 mt-1 truncate">
             {formatTaka(stats.studentReceivablesTotal)}
           </div>
-          <p className="text-[11px] text-slate-400 mt-0.5 group-hover:text-teal-700 transition">
-            Click to disburse change refunds →
+          <p className="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 group-hover:text-teal-700 transition truncate">
+            Disburse refunds →
           </p>
         </Link>
 
         <Link
           href="/meals/guests"
-          className="p-4 bg-white rounded-2xl border border-slate-200/90 hover:border-purple-400/90 transition shadow-2xs hover:shadow-xs block group"
+          className="p-3 sm:p-4 bg-white rounded-xl sm:rounded-2xl border border-slate-200/90 hover:border-purple-400/90 transition shadow-2xs hover:shadow-xs block group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Guest Meals Today</span>
-            <span className="w-2 h-2 rounded-full bg-purple-500" />
+            <span className="text-[11px] sm:text-xs font-semibold text-slate-500 truncate">Guest Tokens</span>
+            <span className="w-2 h-2 rounded-full bg-purple-500 flex-shrink-0" />
           </div>
-          <div className="text-lg font-black text-purple-900 mt-1">
-            {stats.todayGuestMeals} vouchers
+          <div className="text-base sm:text-lg font-black text-purple-900 mt-1 truncate">
+            {stats.todayGuestMeals} meals
           </div>
-          <p className="text-[11px] text-slate-400 mt-0.5 group-hover:text-purple-700 transition">
-            Click to issue guest tokens →
+          <p className="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 group-hover:text-purple-700 transition truncate">
+            Issue guest tokens →
           </p>
         </Link>
 
         <Link
           href="/students"
-          className="p-4 bg-white rounded-2xl border border-slate-200/90 hover:border-slate-400 transition shadow-2xs hover:shadow-xs block group"
+          className="p-3 sm:p-4 bg-white rounded-xl sm:rounded-2xl border border-slate-200/90 hover:border-slate-400 transition shadow-2xs hover:shadow-xs block group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Registered Residents</span>
-            <span className="w-2 h-2 rounded-full bg-slate-400" />
+            <span className="text-[11px] sm:text-xs font-semibold text-slate-500 truncate">Registered</span>
+            <span className="w-2 h-2 rounded-full bg-slate-400 flex-shrink-0" />
           </div>
-          <div className="text-lg font-black text-slate-900 mt-1">
+          <div className="text-base sm:text-lg font-black text-slate-900 mt-1 truncate">
             {stats.registeredStudentsCount} residents
           </div>
-          <p className="text-[11px] text-slate-400 mt-0.5 group-hover:text-slate-700 transition">
-            Click to view student directory →
+          <p className="text-[10px] sm:text-[11px] text-slate-400 mt-0.5 group-hover:text-slate-700 transition truncate">
+            View directory →
           </p>
         </Link>
       </div>

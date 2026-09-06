@@ -145,10 +145,10 @@ export default function PeriodsManagementPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Governance & Settings Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-3 overflow-x-auto no-scrollbar">
         <Link
           href="/management/periods"
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-2xs transition"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white shadow-2xs transition shrink-0"
         >
           <Layers className="w-3.5 h-3.5" />
           <span>Management Periods</span>
@@ -156,7 +156,7 @@ export default function PeriodsManagementPage() {
 
         <Link
           href="/management/settings"
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200 transition"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200 transition shrink-0"
         >
           <Settings className="w-3.5 h-3.5 text-slate-500" />
           <span>Hall Settings</span>

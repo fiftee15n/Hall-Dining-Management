@@ -139,37 +139,37 @@ export default function DuesAndReceivablesPage() {
       )}
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         <div
           onClick={() => setActiveTab('dues')}
-          className={`p-4 rounded-xl border cursor-pointer transition ${
+          className={`p-3.5 sm:p-4 rounded-xl border cursor-pointer transition ${
             activeTab === 'dues' ? 'bg-white border-slate-900 shadow-xs ring-1 ring-slate-900' : 'bg-white border-slate-200'
           }`}
         >
-          <span className="text-[11px] font-medium text-slate-500">Total Student Due (Payable to Mess)</span>
-          <div className="text-2xl font-black text-rose-700 mt-0.5">{formatTaka(stats.totalDue)}</div>
+          <span className="text-[10px] sm:text-[11px] font-medium text-slate-500">Total Student Due (Payable to Mess)</span>
+          <div className="text-xl sm:text-2xl font-black text-rose-700 mt-0.5">{formatTaka(stats.totalDue)}</div>
           <span className="text-[10px] text-slate-400">{dueStudents.length} Students have dues</span>
         </div>
 
         <div
           onClick={() => setActiveTab('receivables')}
-          className={`p-4 rounded-xl border cursor-pointer transition ${
+          className={`p-3.5 sm:p-4 rounded-xl border cursor-pointer transition ${
             activeTab === 'receivables' ? 'bg-white border-slate-900 shadow-xs ring-1 ring-slate-900' : 'bg-white border-slate-200'
           }`}
         >
-          <span className="text-[11px] font-medium text-slate-500">Total Mess Payable (Owed to Students)</span>
-          <div className="text-2xl font-black text-teal-800 mt-0.5">{formatTaka(stats.studentReceivablesTotal)}</div>
-          <span className="text-[10px] text-slate-400">{pendingReceivables.length} Pending refunds / advance payables</span>
+          <span className="text-[10px] sm:text-[11px] font-medium text-slate-500">Total Mess Payable (Owed to Students)</span>
+          <div className="text-xl sm:text-2xl font-black text-teal-800 mt-0.5">{formatTaka(stats.studentReceivablesTotal)}</div>
+          <span className="text-[10px] text-slate-400">{pendingReceivables.length} Pending refunds / payables</span>
         </div>
       </div>
 
       {/* Table Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
+      <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex bg-slate-100 p-1 rounded-xl">
+          <div className="flex bg-slate-100 p-1 rounded-xl overflow-x-auto max-w-full">
             <button
               onClick={() => setActiveTab('dues')}
-              className={`px-4 py-1 rounded-lg text-xs font-bold transition ${
+              className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap ${
                 activeTab === 'dues' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600'
               }`}
             >
@@ -177,11 +177,11 @@ export default function DuesAndReceivablesPage() {
             </button>
             <button
               onClick={() => setActiveTab('receivables')}
-              className={`px-4 py-1 rounded-lg text-xs font-bold transition ${
+              className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap ${
                 activeTab === 'receivables' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600'
               }`}
             >
-              Mess Payable / Refunds ({pendingReceivables.length})
+              Mess Payable ({pendingReceivables.length})
             </button>
           </div>
 
@@ -200,7 +200,7 @@ export default function DuesAndReceivablesPage() {
         {/* Tab 1: Dues Table */}
         {activeTab === 'dues' && (
           <div className="overflow-x-auto border border-slate-200 rounded-xl">
-            <table className="w-full text-left text-xs">
+            <table className="w-full min-w-[550px] text-left text-xs">
               <thead className="bg-slate-50 text-[11px] text-slate-500 uppercase border-b border-slate-200">
                 <tr>
                   <th className="p-3">Room / Block</th>
@@ -253,7 +253,7 @@ export default function DuesAndReceivablesPage() {
         {/* Tab 2: Receivables / Payables Table */}
         {activeTab === 'receivables' && (
           <div className="overflow-x-auto border border-slate-200 rounded-xl">
-            <table className="w-full text-left text-xs">
+            <table className="w-full min-w-[550px] text-left text-xs">
               <thead className="bg-slate-50 text-[11px] text-slate-500 uppercase border-b border-slate-200">
                 <tr>
                   <th className="p-3">Date</th>

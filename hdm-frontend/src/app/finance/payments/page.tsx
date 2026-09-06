@@ -54,36 +54,36 @@ export default function PaymentsPage() {
         </button>
       </div>
 
-      {/* Overview Cards */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-[11px] font-medium text-slate-500">Total Money Collected</span>
-          <div className="text-2xl font-black text-emerald-700 mt-0.5">{formatTaka(stats.totalCollected)}</div>
-          <span className="text-[10px] text-slate-400">{activeInflows.length} Receipts</span>
+      {/* KPI Overview */}
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 truncate block">Total Collected</span>
+          <div className="text-lg sm:text-2xl font-black text-emerald-700 mt-0.5 truncate">{formatTaka(stats.totalCollected)}</div>
+          <span className="text-[9px] sm:text-[10px] text-slate-400 truncate block">{activeInflows.length} Receipts</span>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-[11px] font-medium text-slate-500">Pending Student Due</span>
-          <div className="text-2xl font-black text-rose-700 mt-0.5">{formatTaka(stats.totalDue)}</div>
-          <span className="text-[10px] text-slate-400">Uncollected fees</span>
+        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 truncate block">Student Due</span>
+          <div className="text-lg sm:text-2xl font-black text-rose-700 mt-0.5 truncate">{formatTaka(stats.totalDue)}</div>
+          <span className="text-[9px] sm:text-[10px] text-slate-400 truncate block">Uncollected</span>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-[11px] font-medium text-slate-500">Total Expected Term Inflow</span>
-          <div className="text-2xl font-black text-slate-900 mt-0.5">{formatTaka(stats.totalExpectedCollection)}</div>
-          <span className="text-[10px] text-slate-400">Bookings + Guests + Feasts</span>
+        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 truncate block">Expected Inflow</span>
+          <div className="text-lg sm:text-2xl font-black text-slate-900 mt-0.5 truncate">{formatTaka(stats.totalExpectedCollection)}</div>
+          <span className="text-[9px] sm:text-[10px] text-slate-400 truncate block">Expected</span>
         </div>
       </div>
 
       {/* Table Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
+      <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 overflow-x-auto pb-1 max-w-full">
             {(['ALL', 'Cash', 'bKash', 'Nagad', 'Rocket'] as const).map((method) => (
               <button
                 key={method}
                 onClick={() => setSelectedMethod(method)}
-                className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap ${
                   selectedMethod === method
                     ? 'bg-slate-900 text-white'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -107,7 +107,7 @@ export default function PaymentsPage() {
         </div>
 
         <div className="overflow-x-auto border border-slate-200 rounded-xl">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[550px] text-left text-xs">
             <thead className="bg-slate-50 text-[11px] text-slate-500 uppercase border-b border-slate-200">
               <tr>
                 <th className="p-3">Date</th>

@@ -53,31 +53,31 @@ export default function CashLedgerPage() {
         </button>
       </div>
 
-      {/* Summary Row */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-[11px] font-medium text-slate-500">Total Inflows (+)</span>
-          <div className="text-2xl font-black text-emerald-700 mt-0.5">{formatTaka(stats.totalCollected + (activePeriod?.openingBalance || 0))}</div>
-          <span className="text-[10px] text-slate-400">Opening Balance + Collections</span>
+      {/* KPI Overview */}
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 truncate block">Total Inflows (+)</span>
+          <div className="text-lg sm:text-2xl font-black text-emerald-700 mt-0.5 truncate">{formatTaka(stats.totalCollected + (activePeriod?.openingBalance || 0))}</div>
+          <span className="text-[9px] sm:text-[10px] text-slate-400 truncate block">Collections</span>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-[11px] font-medium text-slate-500">Total Outflows (-)</span>
-          <div className="text-2xl font-black text-rose-700 mt-0.5">{formatTaka(stats.totalExpense)}</div>
-          <span className="text-[10px] text-slate-400">Market Bazar & Refunds</span>
+        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 truncate block">Total Outflows (-)</span>
+          <div className="text-lg sm:text-2xl font-black text-rose-700 mt-0.5 truncate">{formatTaka(stats.totalExpense)}</div>
+          <span className="text-[9px] sm:text-[10px] text-slate-400 truncate block">Bazar & Costs</span>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-[11px] font-medium text-slate-500">Final Cash in Hand</span>
-          <div className="text-2xl font-black text-slate-900 mt-0.5">{formatTaka(stats.currentBalance)}</div>
-          <span className="text-[10px] text-emerald-600 font-bold">Verified Balance</span>
+        <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 truncate block">Cash in Hand</span>
+          <div className="text-lg sm:text-2xl font-black text-slate-900 mt-0.5 truncate">{formatTaka(stats.currentBalance)}</div>
+          <span className="text-[9px] sm:text-[10px] text-emerald-600 font-bold truncate block">Verified Balance</span>
         </div>
       </div>
 
       {/* Table Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
+      <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs space-y-4">
         <div className="overflow-x-auto border border-slate-200 rounded-xl">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[620px] text-left text-xs">
             <thead className="bg-slate-50 text-[11px] text-slate-500 uppercase border-b border-slate-200">
               <tr>
                 <th className="p-3">Date</th>

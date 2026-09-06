@@ -141,12 +141,12 @@ export default function MealAttendancePage() {
           </div>
 
           {/* Block Filters */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 overflow-x-auto pb-1 max-w-full">
             {(['ALL', 'A', 'B', 'C', 'D'] as const).map((b) => (
               <button
                 key={b}
                 onClick={() => setSelectedBlock(b)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap ${
                   selectedBlock === b
                     ? 'bg-slate-900 text-white'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -160,7 +160,7 @@ export default function MealAttendancePage() {
 
         {/* Table */}
         <div className="overflow-x-auto border border-slate-200 rounded-xl">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[520px] text-left text-xs">
             <thead className="bg-slate-50 text-[11px] text-slate-500 uppercase border-b border-slate-200">
               <tr>
                 <th className="py-2.5 px-3">Room / Block</th>

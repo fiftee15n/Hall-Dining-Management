@@ -92,7 +92,7 @@ export default function ReportsPage() {
       </div>
 
       {/* Printable Sheet Box */}
-      <div className="bg-white rounded-2xl border border-slate-300 p-8 shadow-xs space-y-6 print:border-none print:shadow-none print:p-0">
+      <div className="bg-white rounded-2xl border border-slate-300 p-4 sm:p-8 shadow-xs space-y-6 print:border-none print:shadow-none print:p-0">
         {/* Printable Header */}
         <div className="text-center border-b pb-4 space-y-1">
           <h2 className="text-base font-black text-slate-900 uppercase tracking-wide">
@@ -115,42 +115,44 @@ export default function ReportsPage() {
                 <span className="text-slate-500">Date: {formatDateReadable(todayStr)}</span>
               </div>
 
-              <table className="w-full text-left text-xs border border-slate-300">
-                <thead className="bg-slate-100 uppercase border-b border-slate-300 font-bold">
-                  <tr>
-                    <th className="p-2 border-r border-slate-300">Room</th>
-                    <th className="p-2 border-r border-slate-300">Student Name</th>
-                    <th className="p-2 border-r border-slate-300">Student ID</th>
-                    <th className="p-2 border-r border-slate-300">Department</th>
-                    <th className="p-2 text-right">Outstanding Due</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {dueStudents.length === 0 ? (
+              <div className="overflow-x-auto border border-slate-300 rounded-xl">
+                <table className="w-full min-w-[550px] text-left text-xs border-collapse">
+                  <thead className="bg-slate-100 uppercase border-b border-slate-300 font-bold">
                     <tr>
-                      <td colSpan={5} className="p-3 text-center text-slate-400 italic">
-                        No outstanding student dues for this period.
-                      </td>
+                      <th className="p-2 border-r border-slate-300">Room</th>
+                      <th className="p-2 border-r border-slate-300">Student Name</th>
+                      <th className="p-2 border-r border-slate-300">Student ID</th>
+                      <th className="p-2 border-r border-slate-300">Department</th>
+                      <th className="p-2 text-right">Outstanding Due</th>
                     </tr>
-                  ) : (
-                    dueStudents.map((std) => (
-                      <tr key={std.id}>
-                        <td className="p-2 border-r font-bold">{std.block}-{std.room}</td>
-                        <td className="p-2 border-r font-medium">{std.name}</td>
-                        <td className="p-2 border-r text-slate-600">{std.studentId}</td>
-                        <td className="p-2 border-r text-slate-600">{std.department}</td>
-                        <td className="p-2 text-right font-black text-rose-700">{formatTaka(std.balanceDue)}</td>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200">
+                    {dueStudents.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="p-3 text-center text-slate-400 italic">
+                          No outstanding student dues for this period.
+                        </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-                <tfoot className="bg-slate-50 font-black border-t border-slate-300">
-                  <tr>
-                    <td colSpan={4} className="p-2 text-right">Total Outstanding Due:</td>
-                    <td className="p-2 text-right text-rose-700">{formatTaka(stats.totalDue)}</td>
-                  </tr>
-                </tfoot>
-              </table>
+                    ) : (
+                      dueStudents.map((std) => (
+                        <tr key={std.id}>
+                          <td className="p-2 border-r font-bold">{std.block}-{std.room}</td>
+                          <td className="p-2 border-r font-medium">{std.name}</td>
+                          <td className="p-2 border-r text-slate-600">{std.studentId}</td>
+                          <td className="p-2 border-r text-slate-600">{std.department}</td>
+                          <td className="p-2 text-right font-black text-rose-700">{formatTaka(std.balanceDue)}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                  <tfoot className="bg-slate-50 font-black border-t border-slate-300">
+                    <tr>
+                      <td colSpan={4} className="p-2 text-right">Total Outstanding Due:</td>
+                      <td className="p-2 text-right text-rose-700">{formatTaka(stats.totalDue)}</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
             </div>
 
             {/* 2. Payable to Students Sheet */}
@@ -162,44 +164,46 @@ export default function ReportsPage() {
                 <span className="text-slate-500">Total Payable: {formatTaka(stats.studentReceivablesTotal)}</span>
               </div>
 
-              <table className="w-full text-left text-xs border border-slate-300">
-                <thead className="bg-slate-100 uppercase border-b border-slate-300 font-bold">
-                  <tr>
-                    <th className="p-2 border-r border-slate-300">Room</th>
-                    <th className="p-2 border-r border-slate-300">Student Name</th>
-                    <th className="p-2 border-r border-slate-300">Student ID</th>
-                    <th className="p-2 border-r border-slate-300">Department</th>
-                    <th className="p-2 text-right">Payable Amount</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {students.filter((s) => s.balanceReceivable > 0).length === 0 ? (
+              <div className="overflow-x-auto border border-slate-300 rounded-xl">
+                <table className="w-full min-w-[550px] text-left text-xs border-collapse">
+                  <thead className="bg-slate-100 uppercase border-b border-slate-300 font-bold">
                     <tr>
-                      <td colSpan={5} className="p-3 text-center text-slate-400 italic">
-                        No pending payables or refunds owed to students.
-                      </td>
+                      <th className="p-2 border-r border-slate-300">Room</th>
+                      <th className="p-2 border-r border-slate-300">Student Name</th>
+                      <th className="p-2 border-r border-slate-300">Student ID</th>
+                      <th className="p-2 border-r border-slate-300">Department</th>
+                      <th className="p-2 text-right">Payable Amount</th>
                     </tr>
-                  ) : (
-                    students
-                      .filter((s) => s.balanceReceivable > 0)
-                      .map((std) => (
-                        <tr key={std.id}>
-                          <td className="p-2 border-r font-bold">{std.block}-{std.room}</td>
-                          <td className="p-2 border-r font-medium">{std.name}</td>
-                          <td className="p-2 border-r text-slate-600">{std.studentId}</td>
-                          <td className="p-2 border-r text-slate-600">{std.department}</td>
-                          <td className="p-2 text-right font-black text-teal-800">{formatTaka(std.balanceReceivable)}</td>
-                        </tr>
-                      ))
-                  )}
-                </tbody>
-                <tfoot className="bg-slate-50 font-black border-t border-slate-300">
-                  <tr>
-                    <td colSpan={4} className="p-2 text-right">Total Payable to Students:</td>
-                    <td className="p-2 text-right text-teal-800">{formatTaka(stats.studentReceivablesTotal)}</td>
-                  </tr>
-                </tfoot>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200">
+                    {students.filter((s) => s.balanceReceivable > 0).length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="p-3 text-center text-slate-400 italic">
+                          No pending payables or refunds owed to students.
+                        </td>
+                      </tr>
+                    ) : (
+                      students
+                        .filter((s) => s.balanceReceivable > 0)
+                        .map((std) => (
+                          <tr key={std.id}>
+                            <td className="p-2 border-r font-bold">{std.block}-{std.room}</td>
+                            <td className="p-2 border-r font-medium">{std.name}</td>
+                            <td className="p-2 border-r text-slate-600">{std.studentId}</td>
+                            <td className="p-2 border-r text-slate-600">{std.department}</td>
+                            <td className="p-2 text-right font-black text-teal-800">{formatTaka(std.balanceReceivable)}</td>
+                          </tr>
+                        ))
+                    )}
+                  </tbody>
+                  <tfoot className="bg-slate-50 font-black border-t border-slate-300">
+                    <tr>
+                      <td colSpan={4} className="p-2 text-right">Total Payable to Students:</td>
+                      <td className="p-2 text-right text-teal-800">{formatTaka(stats.studentReceivablesTotal)}</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
             </div>
           </div>
         )}
@@ -213,7 +217,7 @@ export default function ReportsPage() {
               </h3>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-4 border border-slate-300 rounded-xl">
                 <span className="font-bold uppercase text-slate-700 block">☀️ Lunch Meal Order</span>
                 <div className="text-3xl font-black text-slate-900 mt-2">{lunchCount} Plates</div>
@@ -246,36 +250,38 @@ export default function ReportsPage() {
               <span className="text-slate-500">Total: {formatTaka(stats.totalExpense)}</span>
             </div>
 
-            <table className="w-full text-left text-xs border border-slate-300">
-              <thead className="bg-slate-100 uppercase border-b border-slate-300 font-bold">
-                <tr>
-                  <th className="p-2 border-r">Date</th>
-                  <th className="p-2 border-r">Item</th>
-                  <th className="p-2 border-r">Category</th>
-                  <th className="p-2 border-r">Qty</th>
-                  <th className="p-2 border-r">Vendor / Memo</th>
-                  <th className="p-2 text-right">Cost</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200">
-                {periodExpenses.map((exp) => (
-                  <tr key={exp.id}>
-                    <td className="p-2 border-r text-slate-500">{exp.date}</td>
-                    <td className="p-2 border-r font-bold">{exp.item}</td>
-                    <td className="p-2 border-r">{exp.category}</td>
-                    <td className="p-2 border-r">{exp.quantity} {exp.unit || ''}</td>
-                    <td className="p-2 border-r text-slate-600">{exp.vendor || exp.purchasedBy}</td>
-                    <td className="p-2 text-right font-bold text-slate-900">{formatTaka(exp.totalCost)}</td>
+            <div className="overflow-x-auto border border-slate-300 rounded-xl">
+              <table className="w-full min-w-[500px] text-left text-xs border-collapse">
+                <thead className="bg-slate-100 uppercase border-b border-slate-300 font-bold">
+                  <tr>
+                    <th className="p-2 border-r">Date</th>
+                    <th className="p-2 border-r">Item</th>
+                    <th className="p-2 border-r">Category</th>
+                    <th className="p-2 border-r">Qty</th>
+                    <th className="p-2 border-r">Vendor / Memo</th>
+                    <th className="p-2 text-right">Cost</th>
                   </tr>
-                ))}
-              </tbody>
-              <tfoot className="bg-slate-50 font-black border-t border-slate-300">
-                <tr>
-                  <td colSpan={5} className="p-2 text-right">Total Bazar Cost:</td>
-                  <td className="p-2 text-right text-rose-700">{formatTaka(stats.totalExpense)}</td>
-                </tr>
-              </tfoot>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {periodExpenses.map((exp) => (
+                    <tr key={exp.id}>
+                      <td className="p-2 border-r text-slate-500">{exp.date}</td>
+                      <td className="p-2 border-r font-bold">{exp.item}</td>
+                      <td className="p-2 border-r">{exp.category}</td>
+                      <td className="p-2 border-r">{exp.quantity} {exp.unit || ''}</td>
+                      <td className="p-2 border-r text-slate-600">{exp.vendor || exp.purchasedBy}</td>
+                      <td className="p-2 text-right font-bold text-slate-900">{formatTaka(exp.totalCost)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot className="bg-slate-50 font-black border-t border-slate-300">
+                  <tr>
+                    <td colSpan={5} className="p-2 text-right">Total Bazar Cost:</td>
+                    <td className="p-2 text-right text-rose-700">{formatTaka(stats.totalExpense)}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
           </div>
         )}
 

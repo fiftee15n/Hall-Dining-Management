@@ -163,8 +163,8 @@ export function StudentProfileDrawer({ student, isOpen, onClose, onEdit }: Stude
                     No meal bookings registered for this period.
                   </p>
                 ) : (
-                  <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
-                    <table className="w-full text-left text-xs">
+                  <div className="border border-slate-200 rounded-2xl overflow-x-auto shadow-2xs">
+                    <table className="w-full text-left text-xs min-w-[520px]">
                       <thead className="bg-slate-50 text-[11px] font-bold text-slate-600 uppercase border-b border-slate-200">
                         <tr>
                           <th className="p-3">Date Range</th>
@@ -211,8 +211,8 @@ export function StudentProfileDrawer({ student, isOpen, onClose, onEdit }: Stude
                   <h4 className="font-bold text-teal-950 text-sm">
                     Pending Payables & Change Refunds ({studentReceivables.length})
                   </h4>
-                  <div className="border border-teal-200 rounded-2xl overflow-hidden bg-teal-50/30 shadow-2xs">
-                    <table className="w-full text-left text-xs">
+                  <div className="border border-teal-200 rounded-2xl overflow-x-auto bg-teal-50/30 shadow-2xs">
+                    <table className="w-full text-left text-xs min-w-[460px]">
                       <thead className="bg-teal-50 text-[11px] font-bold text-teal-900 uppercase border-b border-teal-200">
                         <tr>
                           <th className="p-3">Date</th>
@@ -257,8 +257,8 @@ export function StudentProfileDrawer({ student, isOpen, onClose, onEdit }: Stude
                     No transactions recorded for this student yet.
                   </p>
                 ) : (
-                  <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs max-h-48 overflow-y-auto">
-                    <table className="w-full text-left text-xs">
+                  <div className="border border-slate-200 rounded-2xl overflow-x-auto shadow-2xs max-h-48 overflow-y-auto">
+                    <table className="w-full text-left text-xs min-w-[440px]">
                       <thead className="bg-slate-50 text-[11px] font-bold text-slate-600 uppercase border-b border-slate-200 sticky top-0">
                         <tr>
                           <th className="p-3">Date</th>
