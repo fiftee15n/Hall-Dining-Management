@@ -71,8 +71,9 @@ interface MessContextType {
 
   // Actions
   switchPeriod: (periodId: string) => void;
-  createPeriod: (data: Omit<ManagementPeriod, 'id'>) => void;
+  createPeriod: (data: Omit<ManagementPeriod, 'id'> & { managementPassword?: string }) => void;
   updatePeriod: (id: string, data: Partial<ManagementPeriod>) => void;
+  resetPeriodPassword: (periodId: string, newPassword: string) => void;
   
   // Student Actions
   addStudent: (data: Omit<Student, 'id' | 'balanceDue' | 'balanceReceivable'>) => Student;
@@ -285,19 +286,39 @@ export function MessProvider({ children }: { children: ReactNode }) {
     logAudit('SWITCH_PERIOD', `Switched active period to ${periodId}`, 'Period', periodId);
   };
 
-  const createPeriod = (data: Omit<ManagementPeriod, 'id'>) => {
-    const newPeriod: ManagementPeriod = {
+  const createPeriod = (data: Omit<ManagementPeriod, 'id'> & { managementPassword?: string }) => {
+    const periodNumberMatch = data.code?.match(/\d+/) || data.name?.match(/\d+/);
+    const periodNum = periodNumberMatch ? periodNumberMatch[0].padStart(2, '0') : String(periods.length + 1).padStart(2, '0');
+    const autoEmail = `mp_${periodNum}.hdm@gmail.com`;
+
+    const newPeriod: ManagementPeriod & { managementPassword?: string } = {
       ...data,
       id: generateId('period'),
+      managementEmail: data.managementEmail || autoEmail,
+      teamContactEmail: data.teamContactEmail || '',
+      managementPassword: data.managementPassword || 'Management@@',
     };
     setPeriods((prev) => [newPeriod, ...prev]);
     setActivePeriodId(newPeriod.id);
-    logAudit('CREATE_PERIOD', `Created new period ${newPeriod.name}`, 'Period', newPeriod.id);
+    logAudit('CREATE_PERIOD', `Authority created period ${newPeriod.name} and provisioned login ${newPeriod.managementEmail}`, 'Period', newPeriod.id);
   };
 
   const updatePeriod = (id: string, data: Partial<ManagementPeriod>) => {
     setPeriods((prev) => prev.map((p) => (p.id === id ? { ...p, ...data } : p)));
     logAudit('UPDATE_PERIOD', `Updated period configuration for ${id}`, 'Period', id);
+  };
+
+  const resetPeriodPassword = (periodId: string, newPassword: string) => {
+    setPeriods((prev) =>
+      prev.map((p) => (p.id === periodId ? { ...p, managementPassword: newPassword } as any : p))
+    );
+    const targetPeriod = periods.find((p) => p.id === periodId);
+    logAudit(
+      'RESET_PERIOD_PASSWORD',
+      `Authority updated password for Management Team account (${targetPeriod?.managementEmail || 'mp_*.hdm@gmail.com'}) under '${targetPeriod?.name || periodId}'`,
+      'Period',
+      periodId
+    );
   };
 
   const addStudent = (data: Omit<Student, 'id' | 'balanceDue' | 'balanceReceivable'>) => {
@@ -1146,6 +1167,7 @@ export function MessProvider({ children }: { children: ReactNode }) {
         createFeast,
         registerFeast,
         updateSettings,
+        resetPeriodPassword,
         resetToDefaultData,
       }}
     >

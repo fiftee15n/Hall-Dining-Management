@@ -28,7 +28,7 @@ export function SignInView() {
   const roles: { role: UserRole; label: string; defaultEmail: string; icon: React.ElementType }[] = [
     { role: 'Authority', label: 'Authority', defaultEmail: 'authority.hdm@gmail.com', icon: Shield },
     { role: 'Admin', label: 'Admin', defaultEmail: 'admin.hdm@gmail.com', icon: ShieldCheck },
-    { role: 'Management Team', label: 'Management Team', defaultEmail: 'management.hdm@gmail.com', icon: Users2 },
+    { role: 'Management Team', label: 'Management Team', defaultEmail: 'mp_01.hdm@gmail.com', icon: Users2 },
   ];
 
   const handleRoleChange = (role: UserRole) => {
@@ -40,18 +40,21 @@ export function SignInView() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      const result = loginWithCredentials(email, password);
+    try {
+      const result = await loginWithCredentials(email, password);
       if (!result.success) {
         setErrorMessage(result.error || 'Invalid credentials. Please check your email and password.');
         setIsSubmitting(false);
       }
-    }, 400);
+    } catch (err: any) {
+      setErrorMessage(err?.message || 'Login failed. Please verify credentials.');
+      setIsSubmitting(false);
+    }
   };
 
   return (

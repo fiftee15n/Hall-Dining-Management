@@ -26,6 +26,8 @@ export interface ManagementPeriod {
   managedByTeam: string;
   teamLead: string;
   contactNumber: string;
+  managementEmail?: string;
+  teamContactEmail?: string;
   lunchPrice: number;
   dinnerPrice: number;
   feastRegularPrice: number;

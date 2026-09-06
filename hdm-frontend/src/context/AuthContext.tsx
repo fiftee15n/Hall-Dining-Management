@@ -12,6 +12,7 @@ export interface AuthUser {
   title: string;
   department?: string;
   avatarLetter: string;
+  periodId?: string;
 }
 
 export const VALID_CREDENTIALS = [
@@ -26,9 +27,16 @@ export const VALID_CREDENTIALS = [
     role: 'Authority' as UserRole,
   },
   {
+    email: 'mp_01.hdm@gmail.com',
+    pass: 'Management@@',
+    role: 'Management Team' as UserRole,
+    periodId: 'period-01',
+  },
+  {
     email: 'management.hdm@gmail.com',
     pass: 'Management@@',
     role: 'Management Team' as UserRole,
+    periodId: 'period-01',
   },
 ];
 
@@ -55,24 +63,26 @@ export const ROLE_PRESETS: Record<UserRole, AuthUser> = {
     id: 'mgmt-comm-50',
     name: '50th Batch Student Committee',
     role: 'Management Team',
-    email: 'management.hdm@gmail.com',
+    email: 'mp_01.hdm@gmail.com',
     title: 'Student Dining Management Committee',
     department: 'Resident Student Representatives',
     avatarLetter: 'M',
+    periodId: 'period-01',
   },
 };
 
 interface AuthContextType {
   user: AuthUser | null;
   isLoading: boolean;
-  login: (role: UserRole, customName?: string) => void;
-  loginWithCredentials: (email: string, pass: string) => { success: boolean; error?: string };
+  login: (role: UserRole, customName?: string, periodId?: string) => void;
+  loginWithCredentials: (email: string, pass: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const AUTH_STORAGE_KEY = 'hdm_auth_user';
+const TOKEN_STORAGE_KEY = 'hdm_auth_token';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -96,11 +106,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => clearTimeout(timer);
   }, []);
 
-  const login = (role: UserRole, customName?: string) => {
+  const login = (role: UserRole, customName?: string, periodId?: string) => {
     const basePreset = ROLE_PRESETS[role];
     const authenticatedUser: AuthUser = {
       ...basePreset,
       name: customName?.trim() || basePreset.name,
+      periodId: periodId || basePreset.periodId,
     };
     setUser(authenticatedUser);
     try {
@@ -110,7 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const loginWithCredentials = (email: string, pass: string): { success: boolean; error?: string } => {
+  const loginWithCredentials = async (email: string, pass: string): Promise<{ success: boolean; error?: string }> => {
     const cleanEmail = email.trim().toLowerCase();
     const cleanPass = pass.trim();
 
@@ -118,18 +129,99 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return { success: false, error: 'Please enter both email and password' };
     }
 
-    const matched = VALID_CREDENTIALS.find(
-      (c) => c.email.toLowerCase() === cleanEmail && c.pass === cleanPass
-    );
+    // 1. Try FastAPI Backend if available
+    try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+      const response = await fetch(`${apiBase}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleanEmail, password: cleanPass }),
+      });
 
-    if (!matched) {
+      if (response.ok) {
+        const data = await response.json();
+        const authenticatedUser: AuthUser = {
+          id: data.user.id,
+          name: data.user.name,
+          role: data.user.role,
+          email: data.user.email,
+          title: data.user.title || '',
+          department: data.user.department || '',
+          avatarLetter: data.user.avatarLetter || data.user.name.charAt(0).toUpperCase(),
+          periodId: data.user.periodId || (data.user.role === 'Management Team' ? 'period-01' : undefined),
+        };
+
+        setUser(authenticatedUser);
+        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authenticatedUser));
+        if (data.access_token) {
+          localStorage.setItem(TOKEN_STORAGE_KEY, data.access_token);
+        }
+        return { success: true };
+      }
+    } catch (apiErr) {
+      // Backend not running or unreachable -> fallback to local credential verification
+    }
+
+    // 2. Local fallback credential matching (including dynamic period credentials)
+    let matchedPeriodId: string | undefined = undefined;
+    let matchedRole: UserRole | undefined = undefined;
+    let matchedName: string | undefined = undefined;
+
+    // Check dynamic period credentials saved in localStorage
+    try {
+      const savedPeriodsStr = localStorage.getItem('gau_female_hall_residents_v2');
+      if (savedPeriodsStr) {
+        const parsed = JSON.parse(savedPeriodsStr);
+        if (parsed.periods && Array.isArray(parsed.periods)) {
+          const foundPeriod = parsed.periods.find((p: any) => {
+            const periodEmail = p.managementEmail?.toLowerCase() || '';
+            const defaultEmail = `mp_${p.code?.replace(/\D/g, '') || '01'}.hdm@gmail.com`.toLowerCase();
+            return periodEmail === cleanEmail || defaultEmail === cleanEmail;
+          });
+
+          if (foundPeriod) {
+            const storedPass = foundPeriod.managementPassword || 'Management@@';
+            if (storedPass === cleanPass) {
+              matchedPeriodId = foundPeriod.id;
+              matchedRole = 'Management Team';
+              matchedName = `${foundPeriod.managedByTeam} (${foundPeriod.name})`;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    // Check static credentials
+    if (!matchedRole) {
+      const matched = VALID_CREDENTIALS.find(
+        (c) => c.email.toLowerCase() === cleanEmail && c.pass === cleanPass
+      );
+      if (matched) {
+        matchedRole = matched.role;
+        matchedPeriodId = (matched as any).periodId;
+      }
+    }
+
+    // Dynamic mp_*.hdm@gmail.com format check with default password
+    if (!matchedRole && cleanEmail.startsWith('mp_') && cleanEmail.endsWith('@gmail.com') && cleanPass === 'Management@@') {
+      matchedRole = 'Management Team';
+      const periodNum = cleanEmail.replace('mp_', '').replace('.hdm@gmail.com', '');
+      matchedPeriodId = `period-${periodNum}`;
+      matchedName = `Management Team (Period #${periodNum})`;
+    }
+
+    if (!matchedRole) {
       return { success: false, error: 'Invalid email or password. Please check your credentials.' };
     }
 
-    const basePreset = ROLE_PRESETS[matched.role];
+    const basePreset = ROLE_PRESETS[matchedRole];
     const authenticatedUser: AuthUser = {
       ...basePreset,
-      email: matched.email,
+      email: cleanEmail,
+      name: matchedName || basePreset.name,
+      periodId: matchedPeriodId || basePreset.periodId,
     };
 
     setUser(authenticatedUser);
@@ -146,6 +238,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     try {
       localStorage.removeItem(AUTH_STORAGE_KEY);
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
     } catch (err) {
       console.error('Failed to clear auth user', err);
     }
